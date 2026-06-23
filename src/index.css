@@ -1,0 +1,276 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Palette: space indigo */
+  --color-space-indigo-100: #08090d;
+  --color-space-indigo-200: #11121a;
+  --color-space-indigo-300: #191b27;
+  --color-space-indigo-400: #222334;
+  --color-space-indigo-500: #2b2d42;
+  --color-space-indigo-600: #4a4d72;
+  --color-space-indigo-700: #6d71a0;
+  --color-space-indigo-800: #9da0bf;
+  --color-space-indigo-900: #ced0df;
+  --color-space-indigo: #2b2d42;
+
+  /* Palette: lavender grey */
+  --color-lavender-grey-100: #1a1e25;
+  --color-lavender-grey-200: #343c4a;
+  --color-lavender-grey-300: #4f5b6f;
+  --color-lavender-grey-400: #697994;
+  --color-lavender-grey-500: #8d99ae;
+  --color-lavender-grey-600: #a4aebf;
+  --color-lavender-grey-700: #bbc2cf;
+  --color-lavender-grey-800: #d2d6df;
+  --color-lavender-grey-900: #e8ebef;
+  --color-lavender-grey: #8d99ae;
+
+  /* Palette: platinum */
+  --color-platinum-100: #24353b;
+  --color-platinum-200: #496a77;
+  --color-platinum-300: #759bab;
+  --color-platinum-400: #b1c6cf;
+  --color-platinum-500: #edf2f4;
+  --color-platinum-600: #f0f4f6;
+  --color-platinum-700: #f4f7f8;
+  --color-platinum-800: #f7fafa;
+  --color-platinum-900: #fbfcfd;
+  --color-platinum: #edf2f4;
+
+  /* Palette: punch red */
+  --color-punch-red-100: #330409;
+  --color-punch-red-200: #660813;
+  --color-punch-red-300: #9a0c1c;
+  --color-punch-red-400: #cd0f26;
+  --color-punch-red-500: #ef233c;
+  --color-punch-red-600: #f25063;
+  --color-punch-red-700: #f57c8a;
+  --color-punch-red-800: #f8a8b1;
+  --color-punch-red-900: #fcd3d8;
+  --color-punch-red: #ef233c;
+
+  /* Palette: classic crimson */
+  --color-classic-crimson-100: #2b000a;
+  --color-classic-crimson-200: #560014;
+  --color-classic-crimson-300: #81001e;
+  --color-classic-crimson-400: #ab0028;
+  --color-classic-crimson-500: #d80032;
+  --color-classic-crimson-600: #ff124a;
+  --color-classic-crimson-700: #ff4e77;
+  --color-classic-crimson-800: #ff89a4;
+  --color-classic-crimson-900: #ffc4d2;
+  --color-classic-crimson: #d80032;
+
+  /* Semantic tokens (shadcn) */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-paper-warm: var(--paper-warm);
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* Light mode — platinum base, space indigo ink, punch red accent */
+  --background: #edf2f4;
+  --foreground: #2b2d42;
+  --card: #fbfcfd;
+  --card-foreground: #2b2d42;
+  --popover: #fbfcfd;
+  --popover-foreground: #2b2d42;
+
+  --primary: #ef233c;
+  --primary-foreground: #fbfcfd;
+
+  --secondary: #e8ebef;
+  --secondary-foreground: #2b2d42;
+  --muted: #f0f4f6;
+  --muted-foreground: #697994;
+  --paper-warm: #f4f7f8;
+
+  --accent: #e8ebef;
+  --accent-foreground: #222334;
+  --destructive: #d80032;
+  --border: #d2d6df;
+  --input: #d2d6df;
+  --ring: #ef233c;
+}
+
+.dark {
+  --background: #2b2d42;
+  --foreground: #edf2f4;
+  --card: #222334;
+  --card-foreground: #edf2f4;
+  --popover: #222334;
+  --popover-foreground: #edf2f4;
+
+  --primary: #ef233c;
+  --primary-foreground: #fbfcfd;
+
+  --secondary: #191b27;
+  --secondary-foreground: #edf2f4;
+  --muted: #191b27;
+  --muted-foreground: #a4aebf;
+  --paper-warm: #222334;
+
+  --accent: #343c4a;
+  --accent-foreground: #edf2f4;
+  --destructive: #ff124a;
+  --border: #4a4d72;
+  --input: #4a4d72;
+  --ring: #f25063;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+  a:focus-visible,
+  button:focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-sans {
+    font-family: var(--font-sans);
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  .paper-grain {
+    position: relative;
+  }
+  .paper-grain::before {
+    content: "";
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .gradient-mesh {
+    background:
+      radial-gradient(ellipse 80% 60% at 10% 20%, rgb(141 153 174 / 0.18), transparent 50%),
+      radial-gradient(ellipse 60% 50% at 90% 10%, rgb(239 35 60 / 0.08), transparent 45%),
+      radial-gradient(ellipse 70% 60% at 70% 90%, rgb(237 242 244 / 0.9), transparent 50%),
+      var(--background);
+  }
+
+  .hairline-rule {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(141 153 174 / 0.45) 20%,
+      rgb(141 153 174 / 0.45) 80%,
+      transparent
+    );
+  }
+
+  .pdf-page-shadow {
+    box-shadow:
+      0 1px 2px rgb(43 45 66 / 0.06),
+      0 8px 24px rgb(43 45 66 / 0.1),
+      0 24px 48px rgb(43 45 66 / 0.08);
+  }
+
+  .section-padding {
+    @apply py-16 sm:py-24 lg:py-28;
+  }
+
+  .nav-link {
+    @apply relative transition-colors hover:text-foreground;
+  }
+  .nav-link::after {
+    content: "";
+    @apply absolute -bottom-1 left-0 h-px w-0 bg-primary transition-all duration-300;
+  }
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 40s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-marquee {
+      animation: none;
+    }
+  }
+}
+
+.markdown-body h2 {
+  @apply mt-4 mb-2 text-base font-semibold;
+}
+.markdown-body p {
+  @apply mb-3 text-sm text-muted-foreground;
+}
+.markdown-body ol {
+  @apply mb-3 list-decimal space-y-1 pl-5 text-sm;
+}
+.markdown-body ul {
+  @apply mb-3 list-disc space-y-1 pl-5 text-sm;
+}
+.markdown-body code {
+  @apply rounded bg-muted px-1 py-0.5 font-mono text-xs;
+}
+.markdown-body pre {
+  @apply mb-3 overflow-x-auto rounded-lg bg-muted p-3;
+}
+.markdown-body pre code {
+  @apply bg-transparent p-0;
+}
+.markdown-body strong {
+  @apply font-semibold text-foreground;
+}

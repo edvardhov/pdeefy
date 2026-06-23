@@ -1,0 +1,335 @@
+import {
+  Combine,
+  Scissors,
+  FileOutput,
+  Trash2,
+  LayoutGrid,
+  RotateCw,
+  PenLine,
+  Type,
+  Image,
+  Droplets,
+  Lock,
+  LockOpen,
+  Layers,
+  FileImage,
+  FileText,
+  FileSpreadsheet,
+  Presentation,
+  ScanText,
+  Minimize2,
+  Wrench,
+} from 'lucide-react'
+import type { ToolDefinition } from '@/features/types'
+import {
+  notImplementedRunner,
+  runDeepCompress,
+  runJpgToPdf,
+  runMerge,
+  runOcr,
+  runPasswordProtect,
+  runPdfToWord,
+  runRotate,
+  runSplit,
+} from '@/features/runners'
+
+export const TOOLS: ToolDefinition[] = [
+  // Organize
+  {
+    id: 'merge',
+    name: 'Merge PDF',
+    description: 'Combine multiple PDFs into one document.',
+    category: 'Organize',
+    mode: 'client',
+    icon: Combine,
+    accepts: 'pdf',
+    multiple: true,
+    runner: runMerge,
+  },
+  {
+    id: 'split',
+    name: 'Split PDF',
+    description: 'Split in half or extract pages by range.',
+    category: 'Organize',
+    mode: 'client',
+    icon: Scissors,
+    accepts: 'pdf',
+    runner: runSplit,
+    paramFields: [
+      {
+        key: 'mode',
+        label: 'Split mode',
+        type: 'select',
+        defaultValue: 'half',
+        options: [
+          { value: 'half', label: 'Split in half' },
+          { value: 'pages', label: 'By page ranges' },
+        ],
+      },
+      {
+        key: 'ranges',
+        label: 'Page ranges',
+        type: 'text',
+        placeholder: 'e.g. 1-3,5,7-9',
+      },
+    ],
+  },
+  {
+    id: 'extract',
+    name: 'Extract Pages',
+    description: 'Extract selected pages into a new PDF.',
+    category: 'Organize',
+    mode: 'client',
+    icon: FileOutput,
+    accepts: 'pdf',
+    runner: notImplementedRunner,
+  },
+  {
+    id: 'delete-pages',
+    name: 'Delete Pages',
+    description: 'Remove unwanted pages from a PDF.',
+    category: 'Organize',
+    mode: 'client',
+    icon: Trash2,
+    accepts: 'pdf',
+    runner: notImplementedRunner,
+  },
+  {
+    id: 'organize',
+    name: 'Organize PDF',
+    description: 'Reorder, rotate, and delete pages visually.',
+    category: 'Organize',
+    mode: 'client',
+    icon: LayoutGrid,
+    accepts: 'pdf',
+    runner: notImplementedRunner,
+  },
+  {
+    id: 'rotate',
+    name: 'Rotate PDF',
+    description: 'Rotate all pages by 90°, 180°, or 270°.',
+    category: 'Organize',
+    mode: 'client',
+    icon: RotateCw,
+    accepts: 'pdf',
+    runner: runRotate,
+    paramFields: [
+      {
+        key: 'angle',
+        label: 'Rotation',
+        type: 'select',
+        defaultValue: '90',
+        options: [
+          { value: '90', label: '90° clockwise' },
+          { value: '180', label: '180°' },
+          { value: '270', label: '270° clockwise' },
+        ],
+      },
+    ],
+  },
+
+  // Edit & Sign
+  {
+    id: 'fill-sign',
+    name: 'Fill & Sign',
+    description: 'Add signatures and fill form fields.',
+    category: 'Edit & Sign',
+    mode: 'client',
+    icon: PenLine,
+    accepts: 'pdf',
+    runner: notImplementedRunner,
+  },
+  {
+    id: 'add-text',
+    name: 'Add Text',
+    description: 'Insert text anywhere on your PDF.',
+    category: 'Edit & Sign',
+    mode: 'client',
+    icon: Type,
+    accepts: 'pdf',
+    runner: notImplementedRunner,
+  },
+  {
+    id: 'add-images',
+    name: 'Add Images',
+    description: 'Place images on PDF pages.',
+    category: 'Edit & Sign',
+    mode: 'client',
+    icon: Image,
+    accepts: 'pdf',
+    runner: notImplementedRunner,
+  },
+  {
+    id: 'watermark',
+    name: 'Watermark',
+    description: 'Add a text or image watermark.',
+    category: 'Edit & Sign',
+    mode: 'client',
+    icon: Droplets,
+    accepts: 'pdf',
+    runner: notImplementedRunner,
+  },
+
+  // Security
+  {
+    id: 'password-protect',
+    name: 'Password Protect',
+    description: 'Encrypt a PDF with a password.',
+    category: 'Security',
+    mode: 'client',
+    icon: Lock,
+    accepts: 'pdf',
+    runner: runPasswordProtect,
+    paramFields: [
+      {
+        key: 'userPassword',
+        label: 'Password',
+        type: 'password',
+        placeholder: 'Enter password',
+      },
+      {
+        key: 'ownerPassword',
+        label: 'Owner password (optional)',
+        type: 'password',
+        placeholder: 'Defaults to user password',
+      },
+    ],
+  },
+  {
+    id: 'unlock',
+    name: 'Unlock PDF',
+    description: 'Remove password with the known password.',
+    category: 'Security',
+    mode: 'client',
+    icon: LockOpen,
+    accepts: 'pdf',
+    runner: notImplementedRunner,
+  },
+  {
+    id: 'flatten',
+    name: 'Flatten PDF',
+    description: 'Flatten form fields and annotations.',
+    category: 'Security',
+    mode: 'client',
+    icon: Layers,
+    accepts: 'pdf',
+    runner: notImplementedRunner,
+  },
+
+  // Convert To PDF
+  {
+    id: 'jpg-to-pdf',
+    name: 'JPG to PDF',
+    description: 'Convert JPG/PNG images into a PDF.',
+    category: 'Convert To PDF',
+    mode: 'client',
+    icon: FileImage,
+    accepts: 'image',
+    multiple: true,
+    runner: runJpgToPdf,
+  },
+  {
+    id: 'markdown-to-pdf',
+    name: 'Markdown to PDF',
+    description: 'Render Markdown or plain text as PDF.',
+    category: 'Convert To PDF',
+    mode: 'client',
+    icon: FileText,
+    accepts: 'any',
+    runner: notImplementedRunner,
+  },
+
+  // Convert From PDF (backend)
+  {
+    id: 'pdf-to-word',
+    name: 'PDF to Word',
+    description: 'Convert PDF to editable DOCX.',
+    category: 'Convert From PDF',
+    mode: 'backend',
+    icon: FileText,
+    accepts: 'pdf',
+    runner: runPdfToWord,
+  },
+  {
+    id: 'pdf-to-excel',
+    name: 'PDF to Excel',
+    description: 'Convert PDF tables to XLSX.',
+    category: 'Convert From PDF',
+    mode: 'backend',
+    icon: FileSpreadsheet,
+    accepts: 'pdf',
+    runner: notImplementedRunner,
+  },
+  {
+    id: 'pdf-to-ppt',
+    name: 'PDF to PowerPoint',
+    description: 'Convert PDF slides to PPTX.',
+    category: 'Convert From PDF',
+    mode: 'backend',
+    icon: Presentation,
+    accepts: 'pdf',
+    runner: notImplementedRunner,
+  },
+
+  // Optimize & OCR (backend)
+  {
+    id: 'ocr',
+    name: 'OCR',
+    description: 'Extract searchable text from scanned PDFs.',
+    category: 'Optimize & OCR',
+    mode: 'backend',
+    icon: ScanText,
+    accepts: 'pdf',
+    runner: runOcr,
+    paramFields: [
+      {
+        key: 'language',
+        label: 'Language',
+        type: 'select',
+        defaultValue: 'eng',
+        options: [
+          { value: 'eng', label: 'English' },
+          { value: 'deu', label: 'German' },
+          { value: 'fra', label: 'French' },
+          { value: 'spa', label: 'Spanish' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'compress',
+    name: 'Deep Compress',
+    description: 'Aggressive file-size reduction via server tools.',
+    category: 'Optimize & OCR',
+    mode: 'backend',
+    icon: Minimize2,
+    accepts: 'pdf',
+    runner: runDeepCompress,
+  },
+  {
+    id: 'repair',
+    name: 'Repair PDF',
+    description: 'Fix corrupted or broken PDF files.',
+    category: 'Optimize & OCR',
+    mode: 'backend',
+    icon: Wrench,
+    accepts: 'pdf',
+    runner: notImplementedRunner,
+  },
+]
+
+export const TOOL_MAP = new Map(TOOLS.map((tool) => [tool.id, tool]))
+
+export function getToolById(id: string): ToolDefinition | undefined {
+  return TOOL_MAP.get(id)
+}
+
+export function getToolsByCategory(): Map<string, ToolDefinition[]> {
+  const grouped = new Map<string, ToolDefinition[]>()
+  for (const tool of TOOLS) {
+    const list = grouped.get(tool.category) ?? []
+    list.push(tool)
+    grouped.set(tool.category, list)
+  }
+  return grouped
+}
