@@ -6,8 +6,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { API } from "@/constants/api";
+import { LINKS } from "@/constants/links";
 
-const SETUP_INSTRUCTIONS = `
+function buildSetupInstructions() {
+  return `
 ## Run the Local Power Backend
 
 This feature needs server-side processing (OCR, Office conversion, deep compression). The live demo on GitHub Pages runs entirely in your browser — start the local FastAPI backend to unlock it.
@@ -22,7 +25,7 @@ This feature needs server-side processing (OCR, Office conversion, deep compress
 
 1. **Clone the repository**
    \`\`\`bash
-   git clone https://github.com/your-username/pdeefy.git
+   git clone ${LINKS.githubRepo}.git
    cd pdeefy
    \`\`\`
 
@@ -39,10 +42,11 @@ This feature needs server-side processing (OCR, Office conversion, deep compress
    uvicorn app.main:app --reload --port 8000
    \`\`\`
 
-4. **Return here** — the app will auto-detect the backend at \`http://localhost:8000\`.
+4. **Return here** — the app will auto-detect the backend at \`${API.DEFAULT_URL}\`.
 
 You can change the API URL in **Settings** (gear icon in the header).
 `;
+}
 
 interface BackendGateModalProps {
   open: boolean;
@@ -67,7 +71,7 @@ export function BackendGateModal({
           </DialogDescription>
         </DialogHeader>
         <div className="markdown-body max-w-none">
-          <ReactMarkdown>{SETUP_INSTRUCTIONS}</ReactMarkdown>
+          <ReactMarkdown>{buildSetupInstructions()}</ReactMarkdown>
         </div>
       </DialogContent>
     </Dialog>

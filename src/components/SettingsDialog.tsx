@@ -13,6 +13,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
+import { API } from '@/constants/api'
 import { testConnection } from '@/hooks/useHealthCheck'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { useAppStore } from '@/store/appStore'
@@ -88,7 +89,7 @@ export function SettingsDialog() {
               id="api-url"
               value={draftUrl}
               onChange={(e) => setDraftUrl(e.target.value)}
-              placeholder="http://localhost:8000"
+              placeholder={API.DEFAULT_URL}
             />
           </div>
           <div className="flex gap-2">

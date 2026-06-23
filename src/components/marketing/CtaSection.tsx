@@ -2,12 +2,14 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Reveal } from '@/components/motion/Reveal'
+import { MarketingContainer } from '@/components/marketing/MarketingSection'
 import { Button } from '@/components/ui/button'
+import { ROUTES } from '@/constants/routes'
 
 export function CtaSection() {
   return (
     <section className="section-padding pb-24 sm:pb-32">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <MarketingContainer>
         <Reveal>
           <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-paper-warm px-6 py-14 text-center sm:px-16 sm:py-20">
             {/* Animated gradient border glow */}
@@ -40,7 +42,7 @@ export function CtaSection() {
                 whileTap={{ scale: 0.98 }}
               >
                 <Button asChild size="lg" className="h-12 px-10 text-base shadow-xl shadow-space-indigo-500/10">
-                  <Link to="/tools">
+                  <Link to={ROUTES.tools}>
                     Open the app
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
@@ -49,7 +51,7 @@ export function CtaSection() {
             </div>
           </div>
         </Reveal>
-      </div>
+      </MarketingContainer>
     </section>
   )
 }

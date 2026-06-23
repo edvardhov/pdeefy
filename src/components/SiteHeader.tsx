@@ -8,21 +8,50 @@ import { BrandMark } from '@/components/BrandMark'
 import { ConnectionStatus } from '@/components/ConnectionStatus'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { SettingsDialog } from '@/components/SettingsDialog'
+import { ANCHORS, LINKS } from '@/constants/links'
+import { MARKETING_CONTAINER_CLASS } from '@/constants/ui'
+import { ROUTES } from '@/constants/routes'
 
 const MARKETING_NAV = [
-  { href: '#features', label: 'Features' },
-  { href: '#dual-mode', label: 'Dual-Mode' },
-  {
-    href: 'https://github.com/edvardhov/pdeefy',
-    label: 'GitHub',
-    external: true,
-  },
+  { href: ANCHORS.features, label: 'Features' },
+  { href: ANCHORS.dualMode, label: 'Dual-Mode' },
+  { href: LINKS.githubRepo, label: 'GitHub', external: true },
 ] as const
 
 export type SiteHeaderVariant = 'marketing' | 'app'
 
 interface SiteHeaderProps {
   variant: SiteHeaderVariant
+}
+
+function NavLink({
+  link,
+  className,
+  onClick,
+}: {
+  link: (typeof MARKETING_NAV)[number]
+  className: string
+  onClick?: () => void
+}) {
+  if ('external' in link && link.external) {
+    return (
+      <a
+        href={link.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+        onClick={onClick}
+      >
+        {link.label}
+      </a>
+    )
+  }
+
+  return (
+    <a href={link.href} className={className} onClick={onClick}>
+      {link.label}
+    </a>
+  )
 }
 
 export function SiteHeader({ variant }: SiteHeaderProps) {
@@ -56,9 +85,9 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
           scrolled || mobileOpen ? 'shadow-sm' : 'shadow-none',
         )}
       >
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+        <div className={cn(MARKETING_CONTAINER_CLASS, 'flex h-16 items-center justify-between gap-4')}>
           <Link
-            to="/"
+            to={ROUTES.home}
             className="relative z-50 flex shrink-0 items-center"
             aria-label="Pdeefy home"
           >
@@ -69,23 +98,13 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
 
           {isMarketing && (
             <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
-              {MARKETING_NAV.map((link) =>
-                'external' in link && link.external ? (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="nav-link text-sm text-muted-foreground"
-                  >
-                    {link.label}
-                  </a>
-                ) : (
-                  <a key={link.href} href={link.href} className="nav-link text-sm text-muted-foreground">
-                    {link.label}
-                  </a>
-                ),
-              )}
+              {MARKETING_NAV.map((link) => (
+                <NavLink
+                  key={link.href}
+                  link={link}
+                  className="nav-link text-sm text-muted-foreground"
+                />
+              ))}
             </nav>
           )}
 
@@ -102,7 +121,7 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
                 size="sm"
                 className="hidden shadow-sm shadow-space-indigo-500/10 sm:inline-flex"
               >
-                <Link to="/tools">Open the app</Link>
+                <Link to={ROUTES.tools}>Open the app</Link>
               </Button>
             ) : (
               <div className="hidden sm:block">
@@ -151,25 +170,11 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 + i * 0.06 }}
                     >
-                      {'external' in link && link.external ? (
-                        <a
-                          href={link.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="font-display text-3xl font-light"
-                          onClick={() => setMobileOpen(false)}
-                        >
-                          {link.label}
-                        </a>
-                      ) : (
-                        <a
-                          href={link.href}
-                          className="font-display text-3xl font-light"
-                          onClick={() => setMobileOpen(false)}
-                        >
-                          {link.label}
-                        </a>
-                      )}
+                      <NavLink
+                        link={link}
+                        className="font-display text-3xl font-light"
+                        onClick={() => setMobileOpen(false)}
+                      />
                     </motion.div>
                   ))}
                   <motion.div
@@ -179,7 +184,7 @@ export function SiteHeader({ variant }: SiteHeaderProps) {
                     className="mt-4 w-full max-w-xs"
                   >
                     <Button asChild size="lg" className="w-full">
-                      <Link to="/tools" onClick={() => setMobileOpen(false)}>
+                      <Link to={ROUTES.tools} onClick={() => setMobileOpen(false)}>
                         Open the app
                       </Link>
                     </Button>

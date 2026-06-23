@@ -1,43 +1,24 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion, useInView } from 'motion/react'
+import { motion } from 'motion/react'
 import { PdfPage } from '@/components/marketing/PdfPage'
-import { useMotionSafe } from '@/components/motion/motionConfig'
-
-interface DemoProps {
-  autoPlay?: boolean
-  hovered?: boolean
-}
+import { easeOutExpo } from '@/components/motion/motionConfig'
+import { useDemoInteraction, type DemoProps } from '@/hooks/useDemoInteraction'
 
 export function FlipDemo({ autoPlay = false, hovered: hoveredProp }: DemoProps) {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { margin: '-20%' })
-  const [localHovered, setLocalHovered] = useState(false)
-  const [autoFlipped, setAutoFlipped] = useState(false)
-  const { reduced } = useMotionSafe()
-
-  const hovered = hoveredProp ?? localHovered
-  const flipped = hovered || autoFlipped || reduced
-
-  useEffect(() => {
-    if (!autoPlay || !inView || reduced) return
-    const interval = setInterval(() => setAutoFlipped((f) => !f), 3500)
-    return () => clearInterval(interval)
-  }, [inView, reduced, autoPlay])
+  const { active: flipped, containerProps } = useDemoInteraction({
+    autoPlay,
+    hovered: hoveredProp,
+    intervalMs: 3500,
+    inViewMargin: '-20%',
+    className: 'flex h-44 w-full items-center justify-center sm:h-52',
+  })
 
   return (
-    <div
-      ref={ref}
-      className="flex h-44 w-full items-center justify-center sm:h-52"
-      onMouseEnter={() => setLocalHovered(true)}
-      onMouseLeave={() => setLocalHovered(false)}
-      onTouchStart={() => setLocalHovered(true)}
-      onTouchEnd={() => setLocalHovered(false)}
-    >
+    <div {...containerProps}>
       <div className="relative aspect-[3/4] w-[110px] sm:w-[130px]" style={{ perspective: '1000px' }}>
         <motion.div
           className="relative h-full w-full"
           animate={{ rotateY: flipped ? 180 : 0 }}
-          transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.75, ease: easeOutExpo }}
           style={{ transformStyle: 'preserve-3d' }}
         >
           <div

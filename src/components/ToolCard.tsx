@@ -1,11 +1,11 @@
-import { useNavigate } from 'react-router-dom'
-import { Cloud, Server } from 'lucide-react'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { ModeBadge, ToolIconBox } from '@/components/ModeBadge'
 import { cn } from '@/lib/utils'
 import { isToolImplemented } from '@/features/toolFilters'
 import type { ToolDefinition } from '@/features/types'
 import { useAppStore } from '@/store/appStore'
+import { useOpenTool } from '@/hooks/useOpenTool'
 
 interface ToolCardProps {
   tool: ToolDefinition
@@ -14,18 +14,11 @@ interface ToolCardProps {
 }
 
 export function ToolCard({ tool, onBackendGate, showCategory = false }: ToolCardProps) {
-  const navigate = useNavigate()
+  const openTool = useOpenTool(onBackendGate)
   const isBackendConnected = useAppStore((s) => s.isBackendConnected)
-  const Icon = tool.icon
   const ready = isToolImplemented(tool)
 
-  const handleClick = () => {
-    if (tool.mode === 'backend' && !isBackendConnected) {
-      onBackendGate(tool)
-      return
-    }
-    navigate(`/tool/${tool.id}`)
-  }
+  const handleClick = () => openTool(tool)
 
   return (
     <Card
@@ -43,21 +36,9 @@ export function ToolCard({ tool, onBackendGate, showCategory = false }: ToolCard
     >
       <CardHeader className="space-y-3 px-5 py-5">
         <div className="flex items-start justify-between gap-2">
-          <div className="rounded-lg bg-secondary p-2.5 transition-colors group-hover:bg-punch-red-900/50 dark:group-hover:bg-punch-red-300/15">
-            <Icon className="h-5 w-5 text-primary" />
-          </div>
+          <ToolIconBox icon={tool.icon} />
           <div className="flex flex-wrap justify-end gap-1.5">
-            {tool.mode === 'backend' ? (
-              <Badge variant="outline" className="gap-1 text-xs">
-                <Server className="h-3 w-3" />
-                Server
-              </Badge>
-            ) : (
-              <Badge variant="secondary" className="gap-1 text-xs">
-                <Cloud className="h-3 w-3" />
-                Browser
-              </Badge>
-            )}
+            <ModeBadge mode={tool.mode} />
             {!ready && (
               <Badge variant="outline" className="text-xs text-muted-foreground">
                 Coming soon

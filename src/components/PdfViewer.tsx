@@ -21,10 +21,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
   Dialog,
-  DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { FullscreenDialogContent } from '@/components/FullscreenDialogContent'
 
 const MIN_SCALE = 0.5
 const MAX_SCALE = 2
@@ -429,10 +429,7 @@ interface PdfPreviewModalProps {
 export function PdfPreviewModal({ file, open, onOpenChange }: PdfPreviewModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className="flex h-[92vh] max-h-[92vh] w-[96vw] max-w-[96vw] flex-col gap-0 overflow-hidden p-0 sm:max-w-[96vw]"
-        showCloseButton
-      >
+      <FullscreenDialogContent showCloseButton>
         <DialogHeader className="border-b px-4 py-3 text-left">
           <DialogTitle className="truncate pr-8">{file?.name ?? 'Preview'}</DialogTitle>
         </DialogHeader>
@@ -443,7 +440,7 @@ export function PdfPreviewModal({ file, open, onOpenChange }: PdfPreviewModalPro
             scrollClassName="max-h-none"
           />
         )}
-      </DialogContent>
+      </FullscreenDialogContent>
     </Dialog>
   )
 }

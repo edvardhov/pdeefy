@@ -3,16 +3,9 @@ import { Upload, X, FileText, ImageIcon, Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { PdfPreviewModal } from '@/components/PdfViewer'
-
-export type AcceptedKind = 'pdf' | 'image' | 'any'
-
-const ACCEPT_MAP: Record<AcceptedKind, string> = {
-  pdf: 'application/pdf,.pdf',
-  image: 'image/jpeg,image/png,.jpg,.jpeg,.png',
-  any: 'application/pdf,.pdf,image/jpeg,image/png,.jpg,.jpeg,.png',
-}
-
-const MAX_FILE_SIZE = 100 * 1024 * 1024 // 100 MB
+import { ACCEPT_MAP, MIME } from '@/constants/mime'
+import { FILE_LIMITS } from '@/constants/files'
+import type { AcceptedKind } from '@/features/types'
 
 interface FileDropzoneProps {
   accept: AcceptedKind
@@ -24,11 +17,11 @@ interface FileDropzoneProps {
 }
 
 function validateFile(file: File, accept: AcceptedKind): string | null {
-  if (file.size > MAX_FILE_SIZE) {
-    return `${file.name} exceeds 100 MB limit`
+  if (file.size > FILE_LIMITS.maxBytes) {
+    return `${file.name} exceeds ${FILE_LIMITS.maxLabel} limit`
   }
 
-  if (accept === 'pdf' && file.type !== 'application/pdf') {
+  if (accept === 'pdf' && file.type !== MIME.pdf) {
     return `${file.name} is not a PDF`
   }
 
@@ -38,7 +31,7 @@ function validateFile(file: File, accept: AcceptedKind): string | null {
 
   if (
     accept === 'any' &&
-    file.type !== 'application/pdf' &&
+    file.type !== MIME.pdf &&
     !file.type.startsWith('image/')
   ) {
     return `${file.name} is not a supported file type`

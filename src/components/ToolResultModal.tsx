@@ -2,15 +2,16 @@ import { useEffect, useMemo, useState } from 'react'
 import { Download } from 'lucide-react'
 import { toast } from 'sonner'
 import { PdfViewerCore } from '@/components/PdfViewer'
+import { FullscreenDialogContent } from '@/components/FullscreenDialogContent'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { MIME } from '@/constants/mime'
 import type { ToolOutputFile } from '@/features/types'
 import { bytesToPdfFile, downloadToolOutputs } from '@/lib/download'
 import { cn } from '@/lib/utils'
@@ -30,7 +31,7 @@ export function ToolResultModal({
   outputs,
   downloadZipName,
   toolName,
-  previewMimeTypes = ['application/pdf'],
+  previewMimeTypes = [MIME.pdf],
 }: ToolResultModalProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [downloading, setDownloading] = useState(false)
@@ -45,7 +46,7 @@ export function ToolResultModal({
 
   const safeIndex = Math.min(activeIndex, Math.max(outputs.length - 1, 0))
   const activeOutput = outputs[safeIndex]
-  const activeMime = activeOutput?.mimeType ?? 'application/pdf'
+  const activeMime = activeOutput?.mimeType ?? MIME.pdf
   const canPreviewActive = previewMimeTypes.includes(activeMime)
 
   const previewFile = useMemo(() => {
@@ -72,10 +73,7 @@ export function ToolResultModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className="flex h-[92vh] max-h-[92vh] w-[96vw] max-w-[96vw] flex-col gap-0 overflow-hidden p-0 sm:max-w-[96vw]"
-        showCloseButton
-      >
+      <FullscreenDialogContent showCloseButton>
         <DialogHeader className="border-b px-4 py-3 text-left">
           <DialogTitle>{toolName ? `${toolName} complete` : 'Result ready'}</DialogTitle>
           <DialogDescription>
@@ -127,7 +125,7 @@ export function ToolResultModal({
             {downloading ? 'Downloading…' : downloadLabel}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </FullscreenDialogContent>
     </Dialog>
   )
 }

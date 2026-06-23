@@ -1,13 +1,13 @@
 import io
-import shutil
-import subprocess
-import tempfile
 from pathlib import Path
 
 import fitz
 from docx import Document
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
+
+from app.constants import MIME_DOCX
+from app.validation import read_validated_pdf
 
 router = APIRouter(prefix="/api/convert", tags=["convert"])
 
@@ -35,12 +35,7 @@ def _pdf_to_docx_bytes(pdf_bytes: bytes) -> bytes:
 
 @router.post("/pdf-to-word")
 async def pdf_to_word(file: UploadFile = File(...)) -> StreamingResponse:
-    if not file.filename or not file.filename.lower().endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Upload a PDF file")
-
-    pdf_bytes = await file.read()
-    if not pdf_bytes:
-        raise HTTPException(status_code=400, detail="Empty file")
+    pdf_bytes = await read_validated_pdf(file)
 
     try:
         docx_bytes = _pdf_to_docx_bytes(pdf_bytes)
@@ -50,6 +45,6 @@ async def pdf_to_word(file: UploadFile = File(...)) -> StreamingResponse:
     stem = Path(file.filename).stem
     return StreamingResponse(
         io.BytesIO(docx_bytes),
-        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        media_type=MIME_DOCX,
         headers={"Content-Disposition": f'attachment; filename="{stem}.docx"'},
     )

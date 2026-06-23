@@ -3,6 +3,12 @@ import { motion } from 'motion/react'
 import { Cloud, Server, Zap } from 'lucide-react'
 import { Reveal } from '@/components/motion/Reveal'
 import { Badge } from '@/components/ui/badge'
+import {
+  MarketingContainer,
+  MarketingSectionHeader,
+} from '@/components/marketing/MarketingSection'
+import { ANCHORS } from '@/constants/links'
+import { API } from '@/constants/api'
 import { useAppStore } from '@/store/appStore'
 import { cn } from '@/lib/utils'
 
@@ -11,16 +17,17 @@ export function DualModeSection() {
   const [selected, setSelected] = useState<'demo' | 'power'>(isBackendConnected ? 'power' : 'demo')
 
   return (
-    <section id="dual-mode" className="section-padding relative overflow-hidden">
+    <section id={ANCHORS.dualMode.slice(1)} className="section-padding relative overflow-hidden">
       {/* Background accent */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-punch-red-900/20 to-transparent dark:via-punch-red-300/10" />
 
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+      <MarketingContainer className="relative">
         <Reveal className="mb-10 text-center sm:mb-14">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Architecture</p>
-          <h2 className="mt-3 font-display text-[clamp(1.75rem,4vw,2.75rem)] font-light tracking-tight">
-            Two modes. One codebase.
-          </h2>
+          <MarketingSectionHeader
+            eyebrow="Architecture"
+            title="Two modes. One codebase."
+            align="center"
+          />
           <div className="mt-5 flex justify-center">
             <Badge
               variant={isBackendConnected ? 'default' : 'secondary'}
@@ -91,11 +98,11 @@ export function DualModeSection() {
             icon={Server}
             title="Local Power Mode"
             description="Run FastAPI locally to unlock OCR, PDF-to-Word, and deep compression via PyMuPDF and Tesseract."
-            features={['Auto-detected at localhost:8000', 'Configurable API URL', 'Files never leave your machine']}
+            features={[`Auto-detected at ${API.DEFAULT_HOST}`, 'Configurable API URL', 'Files never leave your machine']}
             highlighted={isBackendConnected}
           />
         </div>
-      </div>
+      </MarketingContainer>
     </section>
   )
 }

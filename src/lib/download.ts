@@ -1,6 +1,8 @@
+import { MIME } from '@/constants/mime'
+
 export function bytesToPdfFile(data: Uint8Array, filename: string): File {
   const copy = new Uint8Array(data)
-  return new File([copy], filename, { type: 'application/pdf' })
+  return new File([copy], filename, { type: MIME.pdf })
 }
 
 export async function downloadToolOutputs(
@@ -26,7 +28,7 @@ export function downloadBlob(blob: Blob, filename: string) {
   URL.revokeObjectURL(url)
 }
 
-export function downloadBytes(data: Uint8Array, filename: string, mimeType = 'application/pdf') {
+export function downloadBytes(data: Uint8Array, filename: string, mimeType = MIME.pdf) {
   const copy = new Uint8Array(data)
   downloadBlob(new Blob([copy], { type: mimeType }), filename)
 }

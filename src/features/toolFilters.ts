@@ -1,27 +1,13 @@
 import { TOOLS } from '@/features/registry'
 import type { ToolCategory, ToolDefinition, ToolMode } from '@/features/types'
-import { CATEGORY_ORDER } from '@/features/types'
+import { CATEGORY_ORDER } from '@/constants/categories'
+import {
+  FEATURED_TOOL_IDS,
+  IMPLEMENTED_TOOL_IDS,
+  POPULAR_TOOL_IDS,
+} from '@/constants/tools'
 
-export const POPULAR_TOOL_IDS = [
-  'merge',
-  'split',
-  'rotate',
-  'jpg-to-pdf',
-  'password-protect',
-  'pdf-to-word',
-  'ocr',
-] as const
-
-export const IMPLEMENTED_TOOL_IDS = new Set([
-  'merge',
-  'split',
-  'rotate',
-  'password-protect',
-  'jpg-to-pdf',
-  'pdf-to-word',
-  'ocr',
-  'compress',
-])
+export { POPULAR_TOOL_IDS, FEATURED_TOOL_IDS, IMPLEMENTED_TOOL_IDS }
 
 export type ModeFilter = 'all' | ToolMode
 export type CategoryFilter = 'all' | ToolCategory
@@ -68,10 +54,18 @@ export function groupTools(tools: ToolDefinition[]): Map<ToolCategory, ToolDefin
   return grouped
 }
 
+function resolveToolsByIds(ids: readonly string[]): ToolDefinition[] {
+  return ids
+    .map((id) => TOOLS.find((tool) => tool.id === id))
+    .filter((tool): tool is ToolDefinition => tool !== undefined)
+}
+
 export function getPopularTools(): ToolDefinition[] {
-  return POPULAR_TOOL_IDS.map((id) => TOOLS.find((tool) => tool.id === id)).filter(
-    (tool): tool is ToolDefinition => tool !== undefined,
-  )
+  return resolveToolsByIds(POPULAR_TOOL_IDS)
+}
+
+export function getFeaturedTools(): ToolDefinition[] {
+  return resolveToolsByIds(FEATURED_TOOL_IDS)
 }
 
 export function hasActiveFilters({ query, mode, category }: ToolFilters): boolean {

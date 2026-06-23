@@ -3,11 +3,15 @@ import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Reveal } from '@/components/motion/Reveal'
 import { TiltCard } from '@/components/motion/TiltCard'
-import { TOOLS } from '@/features/registry'
+import {
+  MarketingContainer,
+  MarketingSectionHeader,
+} from '@/components/marketing/MarketingSection'
+import { ToolIconBox } from '@/components/ModeBadge'
 import { Button } from '@/components/ui/button'
+import { ROUTES } from '@/constants/routes'
+import { getFeaturedTools } from '@/features/toolFilters'
 import { cn } from '@/lib/utils'
-
-const FEATURED_IDS = ['merge', 'split', 'rotate', 'jpg-to-pdf', 'pdf-to-word', 'ocr']
 
 const BENTO_LAYOUT = [
   'sm:col-span-2 lg:col-span-2',
@@ -19,20 +23,15 @@ const BENTO_LAYOUT = [
 ]
 
 export function FeaturedToolsSection() {
-  const featured = FEATURED_IDS.map((id) => TOOLS.find((t) => t.id === id)).filter(Boolean)
+  const featured = getFeaturedTools()
 
   return (
     <section className="section-padding">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <MarketingContainer>
         <Reveal className="mb-10 flex flex-col items-start justify-between gap-4 sm:mb-14 sm:flex-row sm:items-end">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Toolkit</p>
-            <h2 className="mt-3 font-display text-[clamp(1.75rem,4vw,2.75rem)] font-light tracking-tight">
-              Start with the essentials
-            </h2>
-          </div>
+          <MarketingSectionHeader eyebrow="Toolkit" title="Start with the essentials" />
           <Button asChild variant="outline" className="group">
-            <Link to="/tools">
+            <Link to={ROUTES.tools}>
               See all tools
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
@@ -41,7 +40,6 @@ export function FeaturedToolsSection() {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
           {featured.map((tool, i) => {
-            if (!tool) return null
             const Icon = tool.icon
             const isHero = i === 0
 
@@ -49,16 +47,14 @@ export function FeaturedToolsSection() {
               <TiltCard key={tool.id} className={cn(BENTO_LAYOUT[i], isHero && 'lg:row-span-1')} intensity={8}>
                 <motion.div whileHover={{ y: -3 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }}>
                   <Link
-                    to={`/tool/${tool.id}`}
+                    to={ROUTES.tool(tool.id)}
                     className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card/50 p-5 transition-all hover:border-lavender-grey-600 hover:bg-card hover:shadow-lg dark:hover:border-lavender-grey-400 sm:p-6"
                   >
                     {isHero && (
                       <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-punch-red-900/40 blur-2xl dark:bg-punch-red-300/15" />
                     )}
                     <div className="flex w-full items-start justify-between">
-                      <div className="rounded-xl bg-secondary p-3 transition-colors group-hover:bg-punch-red-900/50 dark:group-hover:bg-punch-red-300/15">
-                        <Icon className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
-                      </div>
+                      <ToolIconBox icon={Icon} size="lg" className="rounded-xl bg-secondary p-3 transition-colors group-hover:bg-punch-red-900/50 dark:group-hover:bg-punch-red-300/15" />
                       <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground/40 transition-all group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </div>
                     <div className="mt-4 flex-1">
@@ -81,7 +77,7 @@ export function FeaturedToolsSection() {
             )
           })}
         </div>
-      </div>
+      </MarketingContainer>
     </section>
   )
 }

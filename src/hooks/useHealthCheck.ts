@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { checkHealth } from '@/lib/api'
+import { API } from '@/constants/api'
 import { useAppStore } from '@/store/appStore'
 
 export function useHealthCheck() {
@@ -17,7 +18,7 @@ export function useHealthCheck() {
     }
 
     void runCheck()
-    const interval = setInterval(runCheck, 30_000)
+    const interval = setInterval(runCheck, API.HEALTH_POLL_MS)
 
     return () => {
       cancelled = true

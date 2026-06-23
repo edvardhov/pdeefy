@@ -5,9 +5,13 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AnimatedPageStack } from "@/components/marketing/AnimatedPageStack";
 import { FloatingOrbs } from "@/components/marketing/FloatingOrbs";
+import { MarketingContainer } from "@/components/marketing/MarketingSection";
 import { AnimatedCounter } from "@/components/motion/AnimatedCounter";
 import { TextReveal } from "@/components/motion/TextReveal";
-import { useMotionSafe } from "@/components/motion/motionConfig";
+import { easeOutExpo, useMotionSafe } from "@/components/motion/motionConfig";
+import { LINKS } from "@/constants/links";
+import { ROUTES } from "@/constants/routes";
+import { TOOLS } from "@/features/registry";
 
 function MagneticButton({
   children,
@@ -59,7 +63,7 @@ function MagneticButton({
 }
 
 const STATS = [
-  { value: 22, suffix: "+", label: "PDF tools" },
+  { value: TOOLS.length, suffix: "+", label: "PDF tools" },
   { value: 100, suffix: "%", label: "Client-side core" },
   { value: 0, suffix: "", label: "Uploads required" },
 ];
@@ -74,7 +78,7 @@ export function Hero() {
       {/* Decorative rule */}
       <div className="absolute top-24 left-4 hidden h-32 w-px bg-gradient-to-b from-punch-red-700 to-transparent lg:block" />
 
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+      <MarketingContainer className="relative">
         <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 xl:gap-16">
           <motion.div
             initial="hidden"
@@ -105,7 +109,7 @@ export function Hero() {
               variants={fadeUp}
               className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4"
             >
-              <MagneticButton to="/tools">Open the app</MagneticButton>
+              <MagneticButton to={ROUTES.tools}>Open the app</MagneticButton>
               <Button
                 asChild
                 variant="outline"
@@ -113,7 +117,7 @@ export function Hero() {
                 className="h-12 w-full px-6 sm:w-auto"
               >
                 <a
-                  href="https://github.com/edvardhov/pdeefy"
+                  href={LINKS.githubRepo}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -149,12 +153,12 @@ export function Hero() {
               reduced ? { opacity: 1 } : { opacity: 0, scale: 0.92, y: 20 }
             }
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 0.2, duration: 1, ease: easeOutExpo }}
           >
             <AnimatedPageStack />
           </motion.div>
         </div>
-      </div>
+      </MarketingContainer>
     </section>
   );
 }

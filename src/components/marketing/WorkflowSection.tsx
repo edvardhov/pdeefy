@@ -2,7 +2,8 @@ import { useRef, useState } from 'react'
 import { motion, useInView } from 'motion/react'
 import { ArrowDownToLine, Download, Upload } from 'lucide-react'
 import { PdfPage } from '@/components/marketing/PdfPage'
-import { useMotionSafe } from '@/components/motion/motionConfig'
+import { MarketingContainer, MarketingSectionHeader } from '@/components/marketing/MarketingSection'
+import { easeOutExpo, useMotionSafe } from '@/components/motion/motionConfig'
 
 const STEPS = [
   {
@@ -33,21 +34,18 @@ export function WorkflowSection() {
 
   return (
     <section ref={sectionRef} className="section-padding relative">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <MarketingContainer>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.6, ease: easeOutExpo }}
           className="mb-10 max-w-2xl sm:mb-12"
         >
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Workflow</p>
-          <h2 className="mt-3 font-display text-[clamp(1.75rem,4vw,2.75rem)] font-light leading-tight tracking-tight">
-            Three steps. Zero friction.
-          </h2>
-          <p className="mt-4 text-base text-muted-foreground">
-            From drop to download — every step stays in your browser unless you opt into local power
-            mode.
-          </p>
+          <MarketingSectionHeader
+            eyebrow="Workflow"
+            title="Three steps. Zero friction."
+            description="From drop to download — every step stays in your browser unless you opt into local power mode."
+          />
         </motion.div>
 
         <motion.div
@@ -114,7 +112,7 @@ export function WorkflowSection() {
             </div>
           </div>
         </motion.div>
-      </div>
+      </MarketingContainer>
     </section>
   )
 }

@@ -1,15 +1,8 @@
 import type { LucideIcon } from 'lucide-react'
+import type { ToolCategory } from '@/constants/categories'
 
+export type { ToolCategory }
 export type ToolMode = 'client' | 'backend'
-
-export type ToolCategory =
-  | 'Organize'
-  | 'Edit & Sign'
-  | 'Security'
-  | 'Convert To PDF'
-  | 'Convert From PDF'
-  | 'Optimize & OCR'
-
 export type AcceptedKind = 'pdf' | 'image' | 'any'
 
 export type ToolOutputDelivery = 'download' | 'preview'
@@ -74,11 +67,4 @@ export interface ParamField {
   showWhen?: Record<string, string>
 }
 
-export const CATEGORY_ORDER: ToolCategory[] = [
-  'Organize',
-  'Edit & Sign',
-  'Security',
-  'Convert To PDF',
-  'Convert From PDF',
-  'Optimize & OCR',
-]
+export { CATEGORY_ORDER } from '@/constants/categories'

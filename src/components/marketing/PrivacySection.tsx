@@ -2,6 +2,10 @@ import { motion } from 'motion/react'
 import { Shield, Cpu, Lock } from 'lucide-react'
 import { Reveal } from '@/components/motion/Reveal'
 import { TiltCard } from '@/components/motion/TiltCard'
+import {
+  MarketingContainer,
+  MarketingSectionHeader,
+} from '@/components/marketing/MarketingSection'
 
 const POINTS = [
   {
@@ -24,12 +28,12 @@ const POINTS = [
 export function PrivacySection() {
   return (
     <section className="section-padding border-t border-border/40">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <MarketingContainer>
         <Reveal className="mb-12 max-w-xl sm:mb-16">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Privacy</p>
-          <h2 className="mt-3 font-display text-[clamp(1.75rem,4vw,2.75rem)] font-light tracking-tight">
-            Built for trust, not telemetry
-          </h2>
+          <MarketingSectionHeader
+            eyebrow="Privacy"
+            title="Built for trust, not telemetry"
+          />
         </Reveal>
 
         <div className="grid gap-6 md:grid-cols-3 md:gap-8">
@@ -55,7 +59,7 @@ export function PrivacySection() {
             </Reveal>
           ))}
         </div>
-      </div>
+      </MarketingContainer>
     </section>
   )
 }

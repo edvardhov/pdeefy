@@ -1,4 +1,5 @@
 import type { ParamField, ToolDefinition, ToolRunnerResult } from '@/features/types'
+import { MIME } from '@/constants/mime'
 import { downloadToolOutputs } from '@/lib/download'
 import { toast } from 'sonner'
 
@@ -16,7 +17,7 @@ const DEFAULT_FEATURES: ResolvedToolFeatures = {
   inputPreview: false,
   outputDelivery: 'download',
   autoOpenResult: true,
-  resultPreviewMimeTypes: ['application/pdf'],
+  resultPreviewMimeTypes: [MIME.pdf],
 }
 
 export function resolveToolFeatures(tool: ToolDefinition): ResolvedToolFeatures {
@@ -66,10 +67,10 @@ export function getMinFilesHintMessage(tool: ToolDefinition): string | null {
 export function canPreviewInputFile(tool: ToolDefinition, file: File): boolean {
   if (!resolveToolFeatures(tool).inputPreview) return false
 
-  if (tool.accepts === 'pdf') return file.type === 'application/pdf'
+  if (tool.accepts === 'pdf') return file.type === MIME.pdf
   if (tool.accepts === 'image') return file.type.startsWith('image/')
   if (tool.accepts === 'any') {
-    return file.type === 'application/pdf' || file.type.startsWith('image/')
+    return file.type === MIME.pdf || file.type.startsWith('image/')
   }
 
   return false

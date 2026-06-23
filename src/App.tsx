@@ -4,6 +4,7 @@ import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ROUTES } from "@/constants/routes";
 import { useHealthCheck } from "@/hooks/useHealthCheck";
 import { Dashboard } from "@/pages/Dashboard";
 import { Landing } from "@/pages/Landing";
@@ -15,7 +16,7 @@ function AppShell() {
   return (
     <Routes>
       <Route
-        path="/"
+        path={ROUTES.home}
         element={
           <MarketingLayout>
             <Landing />
@@ -23,7 +24,7 @@ function AppShell() {
         }
       />
       <Route
-        path="/tools"
+        path={ROUTES.tools}
         element={
           <Layout>
             <Dashboard />
@@ -31,14 +32,14 @@ function AppShell() {
         }
       />
       <Route
-        path="/tool/:id"
+        path={ROUTES.toolPattern}
         element={
           <Layout>
             <ToolWorkspace />
           </Layout>
         }
       />
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to={ROUTES.home} replace />} />
     </Routes>
   );
 }

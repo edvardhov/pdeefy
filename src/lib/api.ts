@@ -1,4 +1,4 @@
-const HEALTH_TIMEOUT_MS = 3000
+import { API } from '@/constants/api'
 
 export interface HealthResponse {
   status: string
@@ -7,15 +7,15 @@ export interface HealthResponse {
 
 export async function checkHealth(apiUrl: string): Promise<boolean> {
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), HEALTH_TIMEOUT_MS)
+  const timeout = setTimeout(() => controller.abort(), API.HEALTH_TIMEOUT_MS)
 
   try {
-    const response = await fetch(`${apiUrl}/api/health`, {
+    const response = await fetch(`${apiUrl}${API.paths.health}`, {
       signal: controller.signal,
     })
     if (!response.ok) return false
     const data = (await response.json()) as HealthResponse
-    return data.status === 'ok'
+    return data.status === API.HEALTH_STATUS_OK
   } catch {
     return false
   } finally {

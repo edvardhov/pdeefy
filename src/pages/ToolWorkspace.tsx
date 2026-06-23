@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, Loader2 } from 'lucide-react'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,8 +14,10 @@ import {
 } from '@/components/ui/select'
 import { FileDropzone } from '@/components/FileDropzone'
 import { BackendGateModal } from '@/components/BackendGateModal'
+import { ToolPageHeader } from '@/components/ToolPageHeader'
 import { ToolResultBanner } from '@/components/ToolResultBanner'
 import { ToolResultModal } from '@/components/ToolResultModal'
+import { ROUTES } from '@/constants/routes'
 import { getToolById } from '@/features/registry'
 import {
   canPreviewInputFile,
@@ -62,11 +64,10 @@ export function ToolWorkspace() {
   } = useToolResultCache(inputFingerprint, resultCacheEnabled)
 
   if (!tool) {
-    return <Navigate to="/tools" replace />
+    return <Navigate to={ROUTES.tools} replace />
   }
 
   const features = resolveToolFeatures(tool)
-  const Icon = tool.icon
   const needsBackend = tool.mode === 'backend' && !isBackendConnected
   const canRun = canRunTool(tool, files.length)
   const minFilesHint = getMinFilesHintMessage(tool)
@@ -99,27 +100,11 @@ export function ToolWorkspace() {
   if (needsBackend) {
     return (
       <>
-        <div className="mb-6">
-          <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
-            <Link to="/tools">
-              <ArrowLeft className="mr-1 h-4 w-4" />
-              All tools
-            </Link>
-          </Button>
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-muted p-3">
-              <Icon className="h-6 w-6" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold">{tool.name}</h1>
-              <p className="text-muted-foreground">{tool.description}</p>
-            </div>
-          </div>
-        </div>
+        <ToolPageHeader icon={tool.icon} name={tool.name} description={tool.description} />
         <BackendGateModal
           open
           onOpenChange={(open) => {
-            if (!open) navigate('/tools')
+            if (!open) navigate(ROUTES.tools)
           }}
           toolName={tool.name}
         />
@@ -129,23 +114,7 @@ export function ToolWorkspace() {
 
   return (
     <>
-      <div className="mb-6">
-        <Button variant="ghost" size="sm" asChild className="mb-4 -ml-2">
-          <Link to="/tools">
-            <ArrowLeft className="mr-1 h-4 w-4" />
-            All tools
-          </Link>
-        </Button>
-        <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-muted p-3">
-            <Icon className="h-6 w-6" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">{tool.name}</h1>
-            <p className="text-muted-foreground">{tool.description}</p>
-          </div>
-        </div>
-      </div>
+      <ToolPageHeader icon={tool.icon} name={tool.name} description={tool.description} />
 
       <div className="mx-auto max-w-xl space-y-6">
         <FileDropzone

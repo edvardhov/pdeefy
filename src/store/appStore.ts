@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-
-const DEFAULT_API_URL = 'http://localhost:8000'
+import { API } from '@/constants/api'
+import { STORAGE_KEYS } from '@/constants/storage'
 
 interface AppState {
   isBackendConnected: boolean
@@ -14,15 +14,15 @@ export const useAppStore = create<AppState>()(
   persist(
     (set) => ({
       isBackendConnected: false,
-      apiUrl: DEFAULT_API_URL,
+      apiUrl: API.DEFAULT_URL,
       setApiUrl: (url) => set({ apiUrl: url.replace(/\/$/, '') }),
       setBackendConnected: (connected) => set({ isBackendConnected: connected }),
     }),
     {
-      name: 'pdeefy-settings',
+      name: STORAGE_KEYS.settings,
       partialize: (state) => ({ apiUrl: state.apiUrl }),
     },
   ),
 )
 
-export { DEFAULT_API_URL }
+export { API }

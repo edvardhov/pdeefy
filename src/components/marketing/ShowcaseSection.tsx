@@ -2,9 +2,14 @@ import { useState } from 'react'
 import { motion } from 'motion/react'
 import { Reveal } from '@/components/motion/Reveal'
 import { TiltCard } from '@/components/motion/TiltCard'
+import {
+  MarketingContainer,
+  MarketingSectionHeader,
+} from '@/components/marketing/MarketingSection'
 import { MergeDemo } from '@/components/marketing/demos/MergeDemo'
 import { SplitDemo } from '@/components/marketing/demos/SplitDemo'
 import { FlipDemo } from '@/components/marketing/demos/FlipDemo'
+import { ANCHORS } from '@/constants/links'
 
 const DEMOS = [
   {
@@ -63,17 +68,14 @@ function ShowcaseCard({
 
 export function ShowcaseSection() {
   return (
-    <section id="features" className="section-padding relative">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+    <section id={ANCHORS.features.slice(1)} className="section-padding relative">
+      <MarketingContainer>
         <Reveal className="mb-12 max-w-2xl sm:mb-16">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Capabilities</p>
-          <h2 className="mt-3 font-display text-[clamp(1.75rem,4vw,2.75rem)] font-light tracking-tight">
-            What you can do
-          </h2>
-          <p className="mt-4 max-w-lg text-base text-muted-foreground">
-            Hover or scroll to watch each action. Every tool runs the same logic — fast, local, and
-            private.
-          </p>
+          <MarketingSectionHeader
+            eyebrow="Capabilities"
+            title="What you can do"
+            description="Hover or scroll to watch each action. Every tool runs the same logic — fast, local, and private."
+          />
         </Reveal>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
@@ -81,7 +83,7 @@ export function ShowcaseSection() {
             <ShowcaseCard key={demo.title} {...demo} />
           ))}
         </div>
-      </div>
+      </MarketingContainer>
     </section>
   )
 }

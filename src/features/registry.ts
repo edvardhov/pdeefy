@@ -349,12 +349,3 @@ export function getToolById(id: string): ToolDefinition | undefined {
   return TOOL_MAP.get(id)
 }
 
-export function getToolsByCategory(): Map<string, ToolDefinition[]> {
-  const grouped = new Map<string, ToolDefinition[]>()
-  for (const tool of TOOLS) {
-    const list = grouped.get(tool.category) ?? []
-    list.push(tool)
-    grouped.set(tool.category, list)
-  }
-  return grouped
-}

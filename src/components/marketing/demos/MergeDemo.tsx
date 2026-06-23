@@ -1,39 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion, useInView } from 'motion/react'
+import { motion } from 'motion/react'
 import { PdfPage } from '@/components/marketing/PdfPage'
-import { useMotionSafe, springGentle } from '@/components/motion/motionConfig'
-
-interface DemoProps {
-  autoPlay?: boolean
-  hovered?: boolean
-}
+import { springGentle } from '@/components/motion/motionConfig'
+import { useDemoInteraction, type DemoProps } from '@/hooks/useDemoInteraction'
 
 export function MergeDemo({ autoPlay = false, hovered: hoveredProp }: DemoProps) {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { margin: '-10%' })
-  const [localHovered, setLocalHovered] = useState(false)
-  const [autoActive, setAutoActive] = useState(false)
-  const { reduced } = useMotionSafe()
-
-  const hovered = hoveredProp ?? localHovered
-
-  useEffect(() => {
-    if (!autoPlay || !inView || reduced) return
-    const interval = setInterval(() => setAutoActive((a) => !a), 2800)
-    return () => clearInterval(interval)
-  }, [autoPlay, inView, reduced])
-
-  const merged = hovered || autoActive || reduced
+  const { active: merged, containerProps } = useDemoInteraction({
+    autoPlay,
+    hovered: hoveredProp,
+    intervalMs: 2800,
+  })
 
   return (
-    <div
-      ref={ref}
-      className="relative flex h-44 w-full items-center justify-center sm:h-52"
-      onMouseEnter={() => setLocalHovered(true)}
-      onMouseLeave={() => setLocalHovered(false)}
-      onTouchStart={() => setLocalHovered(true)}
-      onTouchEnd={() => setLocalHovered(false)}
-    >
+    <div {...containerProps}>
       <motion.div
         className="absolute w-[90px] sm:w-[110px]"
         animate={

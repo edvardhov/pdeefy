@@ -1,8 +1,8 @@
-import { useNavigate } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { getPopularTools } from '@/features/toolFilters'
 import type { ToolDefinition } from '@/features/types'
-import { useAppStore } from '@/store/appStore'
+import { ToolIconBox } from '@/components/ModeBadge'
+import { useOpenTool } from '@/hooks/useOpenTool'
 import { cn } from '@/lib/utils'
 
 interface PopularToolsRowProps {
@@ -10,17 +10,8 @@ interface PopularToolsRowProps {
 }
 
 export function PopularToolsRow({ onBackendGate }: PopularToolsRowProps) {
-  const navigate = useNavigate()
-  const isBackendConnected = useAppStore((s) => s.isBackendConnected)
+  const openTool = useOpenTool(onBackendGate)
   const popular = getPopularTools()
-
-  const openTool = (tool: ToolDefinition) => {
-    if (tool.mode === 'backend' && !isBackendConnected) {
-      onBackendGate(tool)
-      return
-    }
-    navigate(`/tool/${tool.id}`)
-  }
 
   return (
     <section aria-label="Popular tools">
@@ -42,9 +33,7 @@ export function PopularToolsRow({ onBackendGate }: PopularToolsRowProps) {
                 'min-w-0 sm:shrink-0',
               )}
             >
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-secondary transition-colors group-hover:bg-punch-red-900/50 dark:group-hover:bg-punch-red-300/15">
-                <Icon className="h-3.5 w-3.5 text-primary" />
-              </span>
+              <ToolIconBox icon={Icon} size="sm" />
               <span className="min-w-0 truncate font-medium sm:whitespace-nowrap">{tool.name}</span>
               <ArrowRight className="ml-auto h-3.5 w-3.5 shrink-0 text-muted-foreground/50 transition-transform group-hover:translate-x-0.5 group-hover:text-primary sm:ml-0" />
             </button>

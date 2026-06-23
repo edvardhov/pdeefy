@@ -1,39 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion, useInView } from 'motion/react'
+import { motion } from 'motion/react'
 import { PdfPage } from '@/components/marketing/PdfPage'
-import { useMotionSafe, springGentle } from '@/components/motion/motionConfig'
-
-interface DemoProps {
-  autoPlay?: boolean
-  hovered?: boolean
-}
+import { springGentle } from '@/components/motion/motionConfig'
+import { useDemoInteraction, type DemoProps } from '@/hooks/useDemoInteraction'
 
 export function SplitDemo({ autoPlay = false, hovered: hoveredProp }: DemoProps) {
-  const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { margin: '-10%' })
-  const [localHovered, setLocalHovered] = useState(false)
-  const [autoActive, setAutoActive] = useState(false)
-  const { reduced } = useMotionSafe()
-
-  const hovered = hoveredProp ?? localHovered
-
-  useEffect(() => {
-    if (!autoPlay || !inView || reduced) return
-    const interval = setInterval(() => setAutoActive((a) => !a), 3200)
-    return () => clearInterval(interval)
-  }, [autoPlay, inView, reduced])
-
-  const split = hovered || autoActive || reduced
+  const { active: split, containerProps } = useDemoInteraction({
+    autoPlay,
+    hovered: hoveredProp,
+    intervalMs: 3200,
+  })
 
   return (
-    <div
-      ref={ref}
-      className="relative flex h-44 w-full items-center justify-center sm:h-52"
-      onMouseEnter={() => setLocalHovered(true)}
-      onMouseLeave={() => setLocalHovered(false)}
-      onTouchStart={() => setLocalHovered(true)}
-      onTouchEnd={() => setLocalHovered(false)}
-    >
+    <div {...containerProps}>
       <motion.div
         className="absolute w-[105px] sm:w-[125px]"
         initial={false}
