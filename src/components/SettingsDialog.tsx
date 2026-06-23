@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { API } from '@/constants/api'
+import { APP_VERSION } from '@/constants/version'
 import { testConnection } from '@/hooks/useHealthCheck'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { useAppStore } from '@/store/appStore'
@@ -69,6 +70,12 @@ export function SettingsDialog() {
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-6">
+          <div className="space-y-2">
+            <Label>About</Label>
+            <div className="rounded-lg border border-border/60 bg-muted/30 px-3 py-2 text-sm text-muted-foreground">
+              Pdeefy v{APP_VERSION}
+            </div>
+          </div>
           <div className="space-y-2">
             <Label>Appearance</Label>
             <div className="flex items-center justify-between rounded-lg border border-border/60 bg-muted/30 px-3 py-2">

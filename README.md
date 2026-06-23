@@ -16,6 +16,7 @@
 
 <p align="center">
   <a href="https://github.com/edvardhov/pdeefy/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+  <a href="https://github.com/edvardhov/pdeefy/releases"><img src="https://img.shields.io/github/v/release/edvardhov/pdeefy?label=version" alt="Version"></a>
   <a href="https://edvardhov.github.io/pdeefy/"><img src="https://img.shields.io/badge/demo-GitHub%20Pages-ef233c" alt="Live demo"></a>
   <img src="https://img.shields.io/badge/tools-22%2B-space%20indigo" alt="22+ tools">
   <img src="https://img.shields.io/badge/client--side-no%20uploads-success" alt="No uploads for core tools">
@@ -144,6 +145,25 @@ The [live demo](https://edvardhov.github.io/pdeefy/) runs entirely in the browse
 | Frontend     | Vite · React 19 · TypeScript · Tailwind CSS v4 · Shadcn/ui |
 | PDF (client) | pdf-lib · Web Workers · pdfjs-dist                         |
 | Backend      | FastAPI · PyMuPDF · python-docx · pytesseract              |
+
+## Versioning
+
+The app version lives in [`package.json`](package.json) (`0.1.0`). The frontend embeds it at build time; the backend reads the same value from `package.json` (or `APP_VERSION` in Docker).
+
+See [CHANGELOG.md](CHANGELOG.md) for release notes.
+
+### Cut a release
+
+1. Update `version` in `package.json` and add an entry to `CHANGELOG.md`.
+2. Commit and push to `main`.
+3. Tag and push — this creates a [GitHub Release](https://github.com/edvardhov/pdeefy/releases) via [`.github/workflows/release.yml`](.github/workflows/release.yml):
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+The tag must match `package.json` exactly (e.g. tag `v0.1.0` ↔ `"version": "0.1.0"`).
 
 ## Deploy
 

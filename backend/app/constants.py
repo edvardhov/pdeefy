@@ -1,4 +1,30 @@
-API_VERSION = "0.1.0"
+import json
+import os
+from pathlib import Path
+
+_DEFAULT_VERSION = "0.1.0"
+
+
+def _read_version() -> str:
+    env_version = os.getenv("APP_VERSION", "").strip()
+    if env_version:
+        return env_version
+
+    for package_json in (
+        Path("/app/package.json"),
+        Path(__file__).resolve().parents[2] / "package.json",
+    ):
+        if not package_json.is_file():
+            continue
+        try:
+            return json.loads(package_json.read_text(encoding="utf-8"))["version"]
+        except (json.JSONDecodeError, KeyError, OSError):
+            continue
+
+    return _DEFAULT_VERSION
+
+
+API_VERSION = _read_version()
 HEALTH_STATUS_OK = "ok"
 
 CORS_ORIGINS = [

@@ -1,6 +1,10 @@
 services:
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-0.1.0}
     ports:
       - "8000:8000"
     volumes:
