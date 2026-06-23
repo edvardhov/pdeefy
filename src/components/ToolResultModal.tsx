@@ -21,6 +21,7 @@ interface ToolResultModalProps {
   outputs: ToolOutputFile[]
   downloadZipName?: string
   toolName?: string
+  previewMimeTypes?: string[]
 }
 
 export function ToolResultModal({
@@ -29,6 +30,7 @@ export function ToolResultModal({
   outputs,
   downloadZipName,
   toolName,
+  previewMimeTypes = ['application/pdf'],
 }: ToolResultModalProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [downloading, setDownloading] = useState(false)
@@ -43,11 +45,13 @@ export function ToolResultModal({
 
   const safeIndex = Math.min(activeIndex, Math.max(outputs.length - 1, 0))
   const activeOutput = outputs[safeIndex]
+  const activeMime = activeOutput?.mimeType ?? 'application/pdf'
+  const canPreviewActive = previewMimeTypes.includes(activeMime)
 
-  const previewFile = useMemo(
-    () => (activeOutput ? bytesToPdfFile(activeOutput.data, activeOutput.name) : null),
-    [activeOutput],
-  )
+  const previewFile = useMemo(() => {
+    if (!activeOutput || !canPreviewActive) return null
+    return bytesToPdfFile(activeOutput.data, activeOutput.name)
+  }, [activeOutput, canPreviewActive])
 
   const handleDownload = async () => {
     if (outputs.length === 0) return
@@ -105,6 +109,13 @@ export function ToolResultModal({
             className="min-h-0 flex-1"
             scrollClassName="max-h-none"
           />
+        )}
+
+        {open && activeOutput && !canPreviewActive && (
+          <div className="flex min-h-[240px] flex-1 flex-col items-center justify-center gap-2 px-6 text-center text-muted-foreground">
+            <p className="text-sm font-medium text-foreground">{activeOutput.name}</p>
+            <p className="text-sm">Preview is not available for this file type. Download to open it.</p>
+          </div>
         )}
 
         <DialogFooter className="border-t px-4 py-3 sm:justify-between">

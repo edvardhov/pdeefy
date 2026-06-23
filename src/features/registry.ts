@@ -44,9 +44,12 @@ export const TOOLS: ToolDefinition[] = [
     icon: Combine,
     accepts: 'pdf',
     multiple: true,
-    preview: true,
-    minFiles: 2,
-    resultPreview: true,
+    features: {
+      minFiles: 2,
+      minFilesMessage: 'Add at least two PDFs to merge',
+      inputPreview: true,
+      outputDelivery: 'preview',
+    },
     runner: runMerge,
   },
   {
@@ -57,8 +60,10 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: Scissors,
     accepts: 'pdf',
-    preview: true,
-    resultPreview: true,
+    features: {
+      inputPreview: true,
+      outputDelivery: 'preview',
+    },
     runner: runSplit,
     paramFields: [
       {
@@ -76,6 +81,7 @@ export const TOOLS: ToolDefinition[] = [
         label: 'Page ranges',
         type: 'text',
         placeholder: 'e.g. 1-3,5,7-9',
+        showWhen: { mode: 'pages' },
       },
     ],
   },
@@ -87,7 +93,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: FileOutput,
     accepts: 'pdf',
-    preview: true,
+    features: { inputPreview: true },
     runner: notImplementedRunner,
   },
   {
@@ -98,7 +104,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: Trash2,
     accepts: 'pdf',
-    preview: true,
+    features: { inputPreview: true },
     runner: notImplementedRunner,
   },
   {
@@ -109,7 +115,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: LayoutGrid,
     accepts: 'pdf',
-    preview: true,
+    features: { inputPreview: true },
     runner: notImplementedRunner,
   },
   {
@@ -120,8 +126,10 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: RotateCw,
     accepts: 'pdf',
-    preview: true,
-    resultPreview: true,
+    features: {
+      inputPreview: true,
+      outputDelivery: 'preview',
+    },
     runner: runRotate,
     paramFields: [
       {
@@ -147,7 +155,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: PenLine,
     accepts: 'pdf',
-    preview: true,
+    features: { inputPreview: true },
     runner: notImplementedRunner,
   },
   {
@@ -158,7 +166,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: Type,
     accepts: 'pdf',
-    preview: true,
+    features: { inputPreview: true },
     runner: notImplementedRunner,
   },
   {
@@ -169,7 +177,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: Image,
     accepts: 'pdf',
-    preview: true,
+    features: { inputPreview: true },
     runner: notImplementedRunner,
   },
   {
@@ -180,7 +188,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: Droplets,
     accepts: 'pdf',
-    preview: true,
+    features: { inputPreview: true },
     runner: notImplementedRunner,
   },
 
@@ -193,7 +201,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: Lock,
     accepts: 'pdf',
-    preview: true,
+    features: { inputPreview: true },
     runner: runPasswordProtect,
     paramFields: [
       {
@@ -218,7 +226,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: LockOpen,
     accepts: 'pdf',
-    preview: true,
+    features: { inputPreview: true },
     runner: notImplementedRunner,
   },
   {
@@ -229,7 +237,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: Layers,
     accepts: 'pdf',
-    preview: true,
+    features: { inputPreview: true },
     runner: notImplementedRunner,
   },
 

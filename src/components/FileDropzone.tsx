@@ -19,7 +19,7 @@ interface FileDropzoneProps {
   multiple?: boolean
   files: File[]
   onChange: (files: File[]) => void
-  showPdfPreview?: boolean
+  canPreviewFile?: (file: File) => boolean
   className?: string
 }
 
@@ -52,7 +52,7 @@ export function FileDropzone({
   multiple = false,
   files,
   onChange,
-  showPdfPreview = false,
+  canPreviewFile,
   className,
 }: FileDropzoneProps) {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -153,7 +153,7 @@ export function FileDropzone({
                 </span>
               </div>
               <div className="flex shrink-0 items-center gap-0.5">
-                {showPdfPreview && file.type === 'application/pdf' && (
+                {canPreviewFile?.(file) && (
                   <Button
                     type="button"
                     variant="ghost"

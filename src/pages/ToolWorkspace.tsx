@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -17,14 +17,20 @@ import { BackendGateModal } from '@/components/BackendGateModal'
 import { ToolResultBanner } from '@/components/ToolResultBanner'
 import { ToolResultModal } from '@/components/ToolResultModal'
 import { getToolById } from '@/features/registry'
-import type { ToolOutputFile } from '@/features/types'
-import { computeRunFingerprint } from '@/lib/toolRun'
+import {
+  canPreviewInputFile,
+  canRunTool,
+  computeToolRunFingerprint,
+  deliverToolResult,
+  getDefaultParams,
+  getMinFilesHintMessage,
+  getMinFilesErrorMessage,
+  isParamFieldVisible,
+  resolveToolFeatures,
+  usesResultCache,
+} from '@/features/toolFeatures'
+import { useToolResultCache } from '@/hooks/useToolResultCache'
 import { useAppStore } from '@/store/appStore'
-
-interface CachedToolResult {
-  outputs: ToolOutputFile[]
-  downloadZipName?: string
-}
 
 export function ToolWorkspace() {
   const { id } = useParams<{ id: string }>()
@@ -37,56 +43,37 @@ export function ToolWorkspace() {
   const [params, setParams] = useState<Record<string, string>>({})
   const [processing, setProcessing] = useState(false)
   const [showGate, setShowGate] = useState(false)
-  const [cachedResult, setCachedResult] = useState<CachedToolResult | null>(null)
-  const [cachedFingerprint, setCachedFingerprint] = useState<string | null>(null)
-  const [resultModalOpen, setResultModalOpen] = useState(false)
 
-  const defaultParams = useMemo(() => {
-    const defaults: Record<string, string> = {}
-    tool?.paramFields?.forEach((field) => {
-      if (field.defaultValue) defaults[field.key] = field.defaultValue
-    })
-    return defaults
-  }, [tool])
-
+  const defaultParams = useMemo(() => (tool ? getDefaultParams(tool) : {}), [tool])
   const mergedParams = { ...defaultParams, ...params }
 
   const inputFingerprint = useMemo(
-    () => computeRunFingerprint(files, mergedParams),
+    () => computeToolRunFingerprint(files, mergedParams),
     [files, mergedParams],
   )
 
-  useEffect(() => {
-    if (cachedFingerprint !== null && cachedFingerprint !== inputFingerprint) {
-      setCachedResult(null)
-      setCachedFingerprint(null)
-      setResultModalOpen(false)
-    }
-  }, [inputFingerprint, cachedFingerprint])
+  const resultCacheEnabled = tool ? usesResultCache(tool) : false
+  const {
+    cachedResult,
+    hasValidCache,
+    cacheResult,
+    resultModalOpen,
+    setResultModalOpen,
+  } = useToolResultCache(inputFingerprint, resultCacheEnabled)
 
   if (!tool) {
     return <Navigate to="/tools" replace />
   }
 
+  const features = resolveToolFeatures(tool)
   const Icon = tool.icon
-  const showRanges = mergedParams.mode === 'pages'
   const needsBackend = tool.mode === 'backend' && !isBackendConnected
-  const minFiles = tool.minFiles ?? 1
-  const canRun = files.length >= minFiles
-  const showPdfPreview = tool.preview && tool.accepts === 'pdf'
-  const usesResultPreview = tool.resultPreview === true
-  const hasValidCache =
-    usesResultPreview &&
-    cachedResult !== null &&
-    cachedFingerprint === inputFingerprint
+  const canRun = canRunTool(tool, files.length)
+  const minFilesHint = getMinFilesHintMessage(tool)
 
   const handleRun = async () => {
-    if (files.length < minFiles) {
-      toast.error(
-        minFiles === 2
-          ? 'Add at least two PDFs to merge'
-          : 'Please add at least one file',
-      )
+    if (!canRunTool(tool, files.length)) {
+      toast.error(getMinFilesErrorMessage(tool))
       return
     }
 
@@ -98,18 +85,11 @@ export function ToolWorkspace() {
     setProcessing(true)
     try {
       const runResult = await tool.runner({ files, params: mergedParams, apiUrl })
+      const delivery = await deliverToolResult(tool, runResult)
 
-      if (runResult.success && runResult.outputs?.length) {
-        if (usesResultPreview) {
-          setCachedResult({
-            outputs: runResult.outputs,
-            downloadZipName: runResult.downloadZipName,
-          })
-          setCachedFingerprint(inputFingerprint)
-          setResultModalOpen(true)
-        }
-      } else if (runResult.success && !usesResultPreview) {
-        // Runners for other tools handle download + toast internally
+      if (delivery === 'cached') {
+        cacheResult(runResult, inputFingerprint)
+        if (features.autoOpenResult) setResultModalOpen(true)
       }
     } finally {
       setProcessing(false)
@@ -173,11 +153,11 @@ export function ToolWorkspace() {
           multiple={tool.multiple}
           files={files}
           onChange={setFiles}
-          showPdfPreview={showPdfPreview}
+          canPreviewFile={(file) => canPreviewInputFile(tool, file)}
         />
 
         {tool.paramFields?.map((field) => {
-          if (field.key === 'ranges' && !showRanges) return null
+          if (!isParamFieldVisible(field, mergedParams)) return null
 
           if (field.type === 'select') {
             return (
@@ -220,7 +200,7 @@ export function ToolWorkspace() {
           )
         })}
 
-        {hasValidCache && cachedResult ? (
+        {hasValidCache && cachedResult?.outputs ? (
           <ToolResultBanner
             outputs={cachedResult.outputs}
             downloadZipName={cachedResult.downloadZipName}
@@ -238,22 +218,21 @@ export function ToolWorkspace() {
           </Button>
         )}
 
-        {!canRun && files.length > 0 && minFiles > 1 && (
-          <p className="text-center text-sm text-muted-foreground">
-            Add at least {minFiles} PDFs to continue
-          </p>
+        {!canRun && files.length > 0 && minFilesHint && (
+          <p className="text-center text-sm text-muted-foreground">{minFilesHint}</p>
         )}
       </div>
 
       <BackendGateModal open={showGate} onOpenChange={setShowGate} toolName={tool.name} />
 
-      {usesResultPreview && cachedResult && (
+      {resultCacheEnabled && cachedResult?.outputs && (
         <ToolResultModal
           open={resultModalOpen}
           onOpenChange={setResultModalOpen}
           outputs={cachedResult.outputs}
           downloadZipName={cachedResult.downloadZipName}
           toolName={tool.name}
+          previewMimeTypes={features.resultPreviewMimeTypes}
         />
       )}
     </>

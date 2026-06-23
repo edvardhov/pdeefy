@@ -1,6 +1,6 @@
 import { toast } from 'sonner'
 import { postFile } from '@/lib/api'
-import { baseName, downloadBlob, downloadBytes } from '@/lib/download'
+import { baseName } from '@/lib/download'
 import { runPdfWorkerOrThrow } from '@/lib/workerClient'
 import type { ToolContext, ToolRunnerResult } from '@/features/types'
 
@@ -67,9 +67,11 @@ export async function runJpgToPdf(ctx: ToolContext): Promise<ToolRunnerResult> {
     const mime = ctx.files[0]?.type
     const result = await runPdfWorkerOrThrow('jpgToPdf', ctx.files, { mime })
     if (!result.data) throw new Error('No output generated')
-    downloadBytes(result.data, 'images.pdf')
-    toast.success('Images converted to PDF')
-    return { success: true }
+    return {
+      success: true,
+      message: 'Images converted to PDF',
+      outputs: [{ name: 'images.pdf', data: result.data }],
+    }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Conversion failed'
     toast.error(message)
@@ -84,13 +86,23 @@ export async function runPasswordProtect(ctx: ToolContext): Promise<ToolRunnerRe
       ownerPassword: ctx.params.ownerPassword,
     })
     if (!result.data) throw new Error('No output generated')
-    downloadBytes(result.data, `protected_${ctx.files[0].name}`)
-    toast.success('PDF password applied')
-    return { success: true }
+    return {
+      success: true,
+      message: 'PDF password applied',
+      outputs: [{ name: `protected_${ctx.files[0].name}`, data: result.data }],
+    }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Password protect failed'
     toast.error(message)
     return { success: false, message }
+  }
+}
+
+async function blobToOutput(name: string, blob: Blob, mimeType: string) {
+  return {
+    name,
+    data: new Uint8Array(await blob.arrayBuffer()),
+    mimeType,
   }
 }
 
@@ -101,9 +113,17 @@ export async function runPdfToWord(ctx: ToolContext): Promise<ToolRunnerResult> 
       endpoint: '/api/convert/pdf-to-word',
       file: ctx.files[0],
     })
-    downloadBlob(blob, `${baseName(ctx.files[0].name)}.docx`)
-    toast.success('PDF converted to Word')
-    return { success: true }
+    return {
+      success: true,
+      message: 'PDF converted to Word',
+      outputs: [
+        await blobToOutput(
+          `${baseName(ctx.files[0].name)}.docx`,
+          blob,
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        ),
+      ],
+    }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Conversion failed'
     toast.error(message)
@@ -119,9 +139,13 @@ export async function runOcr(ctx: ToolContext): Promise<ToolRunnerResult> {
       file: ctx.files[0],
       params: { language: ctx.params.language ?? 'eng' },
     })
-    downloadBlob(blob, `ocr_${ctx.files[0].name}`)
-    toast.success('OCR completed')
-    return { success: true }
+    return {
+      success: true,
+      message: 'OCR completed',
+      outputs: [
+        await blobToOutput(`ocr_${ctx.files[0].name}`, blob, 'application/pdf'),
+      ],
+    }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'OCR failed'
     toast.error(message)
@@ -136,9 +160,13 @@ export async function runDeepCompress(ctx: ToolContext): Promise<ToolRunnerResul
       endpoint: '/api/edit/compress',
       file: ctx.files[0],
     })
-    downloadBlob(blob, `compressed_${ctx.files[0].name}`)
-    toast.success('PDF compressed')
-    return { success: true }
+    return {
+      success: true,
+      message: 'PDF compressed',
+      outputs: [
+        await blobToOutput(`compressed_${ctx.files[0].name}`, blob, 'application/pdf'),
+      ],
+    }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Compression failed'
     toast.error(message)
