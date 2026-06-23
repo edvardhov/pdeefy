@@ -13,7 +13,7 @@ export function DualModeSection() {
   return (
     <section id="dual-mode" className="section-padding relative overflow-hidden">
       {/* Background accent */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.03] to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-punch-red-900/20 to-transparent dark:via-punch-red-300/10" />
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
         <Reveal className="mb-10 text-center sm:mb-14">
@@ -129,15 +129,15 @@ function ModeCard({
         className={cn(
           'h-full w-full rounded-2xl border p-7 text-left transition-shadow sm:p-8',
           isActive
-            ? 'border-primary/30 bg-card shadow-lg shadow-primary/5'
+            ? 'border-punch-red-700 bg-card shadow-lg'
             : 'border-border/60 bg-card/40 opacity-80 hover:opacity-100',
-          highlighted && mode === 'power' && 'ring-2 ring-primary/20',
+          highlighted && mode === 'power' && 'ring-2 ring-punch-red-800/50',
         )}
         whileHover={{ y: -2 }}
         whileTap={{ scale: 0.99 }}
       >
         <div className="mb-5 flex items-center justify-between">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-punch-red-900/50 dark:bg-punch-red-300/15">
             <Icon className="h-5 w-5 text-primary" />
           </div>
           {highlighted && mode === 'power' && (
@@ -152,7 +152,7 @@ function ModeCard({
         <ul className="mt-6 space-y-2.5">
           {features.map((f) => (
             <li key={f} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-              <span className="mt-2 h-px w-3 shrink-0 bg-primary/60" aria-hidden />
+              <span className="mt-2 h-px w-3 shrink-0 bg-punch-red-600" aria-hidden />
               {f}
             </li>
           ))}

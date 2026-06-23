@@ -78,7 +78,7 @@ export function SiteHeader() {
             <Button
               asChild
               size="sm"
-              className="hidden shadow-sm shadow-primary/15 sm:inline-flex"
+              className="hidden shadow-sm shadow-space-indigo-500/10 sm:inline-flex"
             >
               <Link to="/tools">Open the app</Link>
             </Button>

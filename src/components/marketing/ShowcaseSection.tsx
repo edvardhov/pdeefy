@@ -38,7 +38,7 @@ function ShowcaseCard({
   return (
     <TiltCard intensity={8}>
       <motion.article
-        className="group flex h-full flex-col rounded-2xl border border-border/60 bg-card/60 backdrop-blur-sm transition-colors hover:border-primary/25 hover:bg-card"
+        className="group flex h-full flex-col rounded-2xl border border-border/60 bg-card/60 backdrop-blur-sm transition-colors hover:border-lavender-grey-600 hover:bg-card dark:hover:border-lavender-grey-400"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onTouchStart={() => setHovered(true)}
@@ -52,7 +52,7 @@ function ShowcaseCard({
         <div className="border-t border-border/40 p-5 sm:p-6">
           <h3 className="font-display text-xl font-normal">{title}</h3>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{caption}</p>
-          <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-primary/50">
+          <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
             Live preview
           </p>
         </div>

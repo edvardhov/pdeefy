@@ -33,7 +33,7 @@ export function ToolCard({ tool, onBackendGate }: ToolCardProps) {
       }}
       onClick={handleClick}
       className={cn(
-        'cursor-pointer transition-all hover:border-primary/40 hover:shadow-md',
+        'cursor-pointer transition-all hover:border-lavender-grey-600 hover:shadow-md dark:hover:border-lavender-grey-400',
         tool.mode === 'backend' && !isBackendConnected && 'opacity-90',
       )}
     >

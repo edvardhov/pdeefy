@@ -39,7 +39,7 @@ function MagneticButton({
       <Button
         asChild
         size="lg"
-        className="group relative h-12 overflow-hidden px-8 text-base shadow-xl shadow-primary/25"
+        className="group relative h-12 overflow-hidden px-8 text-base shadow-xl shadow-space-indigo-500/10"
       >
         <Link ref={ref} to={to}>
           <motion.span
@@ -72,7 +72,7 @@ export function Hero() {
       <FloatingOrbs />
 
       {/* Decorative rule */}
-      <div className="absolute top-24 left-4 hidden h-32 w-px bg-gradient-to-b from-primary/40 to-transparent lg:block" />
+      <div className="absolute top-24 left-4 hidden h-32 w-px bg-gradient-to-b from-punch-red-700 to-transparent lg:block" />
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
         <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 xl:gap-16">

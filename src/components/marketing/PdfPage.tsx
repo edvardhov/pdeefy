@@ -18,14 +18,14 @@ export function PdfPage({ className, lines = 5, accent = false, variant = 'defau
       <div className="flex items-center border-b border-border/40 bg-muted/30 px-3 py-2">
         <div className="h-1 w-8 rounded-full bg-foreground/10" />
         {accent && (
-          <div className="ml-auto font-mono text-[7px] uppercase tracking-widest text-primary/70">
+          <div className="ml-auto font-mono text-[7px] uppercase tracking-widest text-primary">
             Active
           </div>
         )}
       </div>
 
       {accent && (
-        <div className="absolute top-0 left-0 h-full w-1 bg-primary/70" aria-hidden />
+        <div className="absolute top-0 left-0 h-full w-1 bg-primary" aria-hidden />
       )}
 
       <div className={cn('space-y-2', variant === 'compact' ? 'p-3 pt-3' : 'p-4 pt-4')}>

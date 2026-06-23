@@ -50,13 +50,13 @@ export function FeaturedToolsSection() {
                 <motion.div whileHover={{ y: -3 }} transition={{ type: 'spring', stiffness: 400, damping: 25 }}>
                   <Link
                     to={`/tool/${tool.id}`}
-                    className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card/50 p-5 transition-all hover:border-primary/30 hover:bg-card hover:shadow-lg hover:shadow-primary/5 sm:p-6"
+                    className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card/50 p-5 transition-all hover:border-lavender-grey-600 hover:bg-card hover:shadow-lg dark:hover:border-lavender-grey-400 sm:p-6"
                   >
                     {isHero && (
-                      <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-primary/8 blur-2xl" />
+                      <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-punch-red-900/40 blur-2xl dark:bg-punch-red-300/15" />
                     )}
                     <div className="flex w-full items-start justify-between">
-                      <div className="rounded-xl bg-secondary p-3 transition-colors group-hover:bg-primary/10">
+                      <div className="rounded-xl bg-secondary p-3 transition-colors group-hover:bg-punch-red-900/50 dark:group-hover:bg-punch-red-300/15">
                         <Icon className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
                       </div>
                       <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground/40 transition-all group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

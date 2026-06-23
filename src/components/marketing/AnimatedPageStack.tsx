@@ -67,7 +67,7 @@ export function AnimatedPageStack() {
       role="presentation"
     >
       <motion.div
-        className="absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl sm:h-64 sm:w-64"
+        className="absolute left-1/2 top-1/2 h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-punch-red-900/50 blur-3xl dark:bg-punch-red-300/15 sm:h-64 sm:w-64"
         animate={
           reduced
             ? {}

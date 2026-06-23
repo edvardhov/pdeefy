@@ -54,7 +54,7 @@ export function FlipDemo({ autoPlay = false, hovered: hoveredProp }: DemoProps) 
               transform: 'rotateY(180deg)',
             }}
           >
-            <PdfPage className="h-full w-full border-primary/40" lines={6} accent variant="compact" />
+            <PdfPage className="h-full w-full border-punch-red-700" lines={6} accent variant="compact" />
           </div>
         </motion.div>
       </div>

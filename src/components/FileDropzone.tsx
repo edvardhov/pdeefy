@@ -104,8 +104,8 @@ export function FileDropzone({
         className={cn(
           'flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-10 transition-colors',
           dragOver
-            ? 'border-primary bg-primary/5'
-            : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50',
+            ? 'border-primary bg-punch-red-900/50 dark:bg-punch-red-300/10'
+            : 'border-muted-foreground/25 hover:border-punch-red-600 hover:bg-muted/50',
         )}
       >
         <Upload className="mb-3 h-10 w-10 text-muted-foreground" />

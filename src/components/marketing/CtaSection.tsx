@@ -39,7 +39,7 @@ export function CtaSection() {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <Button asChild size="lg" className="h-12 px-10 text-base shadow-xl shadow-primary/25">
+                <Button asChild size="lg" className="h-12 px-10 text-base shadow-xl shadow-space-indigo-500/10">
                   <Link to="/tools">
                     Open the app
                     <ArrowRight className="ml-2 h-4 w-4" />

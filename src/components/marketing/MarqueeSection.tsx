@@ -17,7 +17,7 @@ export function MarqueeSection() {
               key={`${tool.id}-${i}`}
               className="inline-flex shrink-0 items-center gap-2 rounded-full border border-border/50 bg-card/60 px-3 py-1.5 sm:px-3.5 sm:py-2"
             >
-              <Icon className="h-3.5 w-3.5 text-primary/60" strokeWidth={1.5} />
+              <Icon className="h-3.5 w-3.5 text-punch-red-600" strokeWidth={1.5} />
               <span className="whitespace-nowrap font-display text-sm tracking-tight text-muted-foreground">
                 {tool.name}
               </span>

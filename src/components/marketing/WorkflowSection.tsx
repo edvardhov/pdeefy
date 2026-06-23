@@ -83,7 +83,7 @@ export function WorkflowSection() {
                     <div className="flex gap-5">
                       <span
                         className={`font-display text-3xl font-light tabular-nums transition-colors sm:text-4xl ${
-                          isActive ? 'text-primary/80' : 'text-primary/20'
+                          isActive ? 'text-primary' : 'text-lavender-grey-400 dark:text-lavender-grey-600'
                         }`}
                       >
                         {step.num}
@@ -133,7 +133,7 @@ function DropVisual({ animate }: { animate: boolean }) {
   return (
     <>
       <motion.div
-        className="absolute inset-x-4 bottom-4 top-8 rounded-xl border-2 border-dashed border-primary/30 bg-primary/5"
+        className="absolute inset-x-4 bottom-4 top-8 rounded-xl border-2 border-dashed border-punch-red-700 bg-punch-red-900/50 dark:bg-punch-red-300/10"
         animate={animate ? { opacity: [0.7, 1, 0.7] } : {}}
         transition={{ duration: 2, repeat: Infinity }}
       />
@@ -161,7 +161,7 @@ function ProcessVisual({ animate }: { animate: boolean }) {
   return (
     <div className="relative">
       <motion.div
-        className="absolute -inset-8 rounded-full border border-primary/10"
+        className="absolute -inset-8 rounded-full border border-punch-red-800/40"
         animate={animate ? { scale: [1, 1.08, 1], opacity: [0.4, 0.8, 0.4] } : {}}
         transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
       />
@@ -170,10 +170,10 @@ function ProcessVisual({ animate }: { animate: boolean }) {
         animate={animate ? { scale: [1, 1.02, 1] } : {}}
         transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <PdfPage className="aspect-[3/4] w-full border-primary/30" lines={5} accent variant="compact" />
+        <PdfPage className="aspect-[3/4] w-full border-punch-red-700" lines={5} accent variant="compact" />
         {animate && (
           <motion.div
-            className="absolute inset-x-0 h-px bg-primary/50"
+            className="absolute inset-x-0 h-px bg-punch-red-600"
             animate={{ top: ['10%', '85%', '10%'] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
           />

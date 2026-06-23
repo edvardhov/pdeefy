@@ -69,7 +69,7 @@ export function MergeDemo({ autoPlay = false, hovered: hoveredProp }: DemoProps)
         transition={springGentle}
         style={{ zIndex: 3, pointerEvents: 'none' }}
       >
-        <PdfPage className="aspect-[3/4] w-full border-primary/30" lines={6} accent variant="compact" />
+        <PdfPage className="aspect-[3/4] w-full border-punch-red-700" lines={6} accent variant="compact" />
       </motion.div>
     </div>
   )
