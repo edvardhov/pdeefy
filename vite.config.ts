@@ -3,8 +3,10 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
+const base = process.env.GITHUB_PAGES === 'true' ? '/pdeefy/' : '/'
+
 export default defineConfig({
-  base: '/',
+  base,
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
