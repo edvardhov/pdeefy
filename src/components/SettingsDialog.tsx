@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { testConnection } from '@/hooks/useHealthCheck'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import { useAppStore } from '@/store/appStore'
 
 export function SettingsDialog() {
@@ -62,10 +63,20 @@ export function SettingsDialog() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Settings</DialogTitle>
-          <DialogDescription>Configure the local FastAPI backend connection.</DialogDescription>
+          <DialogDescription>
+            Appearance and local FastAPI backend connection.
+          </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <Label>Appearance</Label>
+            <div className="flex items-center justify-between rounded-lg border border-border/60 bg-muted/30 px-3 py-2">
+              <span className="text-sm text-muted-foreground">Theme</span>
+              <ThemeToggle />
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Status:</span>
             <Badge variant={isBackendConnected ? 'default' : 'secondary'}>
               {isBackendConnected ? 'Connected' : 'Offline'}
@@ -86,6 +97,7 @@ export function SettingsDialog() {
               {testing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Test connection
             </Button>
+          </div>
           </div>
         </div>
       </DialogContent>

@@ -96,6 +96,7 @@
 
 :root {
   --radius: 0.5rem;
+  color-scheme: light;
 
   /* Light mode — platinum base, space indigo ink, punch red accent */
   --background: #edf2f4;
@@ -123,6 +124,8 @@
 }
 
 .dark {
+  color-scheme: dark;
+
   --background: #2b2d42;
   --foreground: #edf2f4;
   --card: #222334;
@@ -197,6 +200,10 @@
       var(--background);
   }
 
+  .dark .gradient-mesh {
+    background: var(--background);
+  }
+
   .hairline-rule {
     height: 1px;
     background: linear-gradient(
@@ -213,6 +220,17 @@
       0 1px 2px rgb(43 45 66 / 0.06),
       0 8px 24px rgb(43 45 66 / 0.1),
       0 24px 48px rgb(43 45 66 / 0.08);
+  }
+
+  .dark .pdf-page-shadow {
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.25),
+      0 8px 24px rgb(0 0 0 / 0.35),
+      0 24px 48px rgb(0 0 0 / 0.28);
+  }
+
+  .dark .paper-grain::before {
+    display: none;
   }
 
   .section-padding {

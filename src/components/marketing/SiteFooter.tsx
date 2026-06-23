@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { BrandMark } from "@/components/BrandMark";
 
 export function SiteFooter() {
   return (
@@ -6,12 +7,7 @@ export function SiteFooter() {
       <div className="mx-auto max-w-6xl px-4">
         <div className="flex flex-col items-start justify-between gap-8 sm:flex-row sm:items-center">
           <div>
-            <p className="font-display text-lg font-light">
-              pde<span className="text-primary">efy</span>
-            </p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Open-source PDF tools. MIT License.
-            </p>
+            <BrandMark iconClassName="h-7 w-7" logoClassName="h-8 w-auto" />
           </div>
           <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
             <Link

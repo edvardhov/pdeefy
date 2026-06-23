@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none" role="img" aria-label="Pdeefy app icon">
+  <!-- Page body: platinum sheet with space-indigo ink outline for legibility on light backgrounds -->
+  <path
+    d="M120 56 L312 56 L424 168 L424 432 A32 32 0 0 1 392 464 L120 464 A32 32 0 0 1 88 432 L88 88 A32 32 0 0 1 120 56 Z"
+    fill="#fbfcfd"
+    stroke="#2b2d42"
+    stroke-width="16"
+    stroke-linejoin="round"
+  />
+
+  <!-- Folded corner (underside) -->
+  <path d="M312 56 L312 168 L424 168 Z" fill="#d2d6df" />
+  <path
+    d="M312 56 L312 168 L424 168"
+    fill="none"
+    stroke="#2b2d42"
+    stroke-width="16"
+    stroke-linejoin="round"
+    stroke-linecap="round"
+  />
+
+  <!-- Content lines -->
+  <g stroke="#8d99ae" stroke-width="18" stroke-linecap="round" opacity="0.6">
+    <line x1="140" y1="226" x2="280" y2="226" />
+    <line x1="140" y1="266" x2="356" y2="266" />
+  </g>
+
+  <!-- PDFY badge: punch-red primary, overhanging the lower-left edge -->
+  <rect x="64" y="332" width="208" height="96" rx="22" fill="#ef233c" />
+  <!-- PDFY wordmark, outlined from Instrument Sans Bold (see scripts/outline_pdfy.py) -->
+  <g transform="translate(87.26 399.71) scale(0.05476 -0.05476)"><path d="M50 0V720H392Q472 720 529.5 692.0Q587 664 618.5 614.0Q650 564 650 497Q650 430 618.0 379.0Q586 328 528.5 299.5Q471 271 392 271H172V389H384Q437 389 466.5 418.5Q496 448 496 496Q496 544 466.5 573.0Q437 602 384 602H204V0ZM876 0V120H1058Q1136 120 1190.5 151.5Q1245 183 1273.5 238.0Q1302 293 1302 364Q1302 434 1274.0 487.0Q1246 540 1191.5 570.0Q1137 600 1058 600H879V720H1058Q1179 720 1269.0 676.5Q1359 633 1408.5 552.5Q1458 472 1458 362Q1458 252 1408.0 170.5Q1358 89 1268.5 44.5Q1179 0 1059 0ZM782 0V720H936V0ZM1598 0V720H1752V0ZM1670 279V397H2083V279ZM1670 602V720H2106V602ZM2477 0V291L2209 720H2394L2606 339H2519L2730 720H2899L2631 291V0Z" fill="#fbfcfd"/></g>
+</svg>

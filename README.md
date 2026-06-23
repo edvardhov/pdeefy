@@ -1,4 +1,7 @@
-# pdeefy
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="public/app-logo-dark.svg">
+  <img alt="Pdeefy" src="public/app-logo-light.svg" height="72">
+</picture>
 
 Open-source, web-based PDF tool suite with a **dual-mode architecture**:
 
@@ -50,6 +53,15 @@ The frontend auto-detects the backend at `http://localhost:8000/api/health`. Cha
 | Frontend | Vite, React 19, TypeScript, Tailwind CSS v4, Shadcn/ui |
 | PDF (client) | pdf-lib, Web Workers |
 | Backend | FastAPI, PyMuPDF, python-docx, pytesseract |
+
+## Brand assets
+
+| Asset | Light | Dark |
+|-------|-------|------|
+| Full logo (wordmark) | [`app-logo-light.svg`](public/app-logo-light.svg) | [`app-logo-dark.svg`](public/app-logo-dark.svg) |
+| Icon mark | [`app-icon-light.svg`](public/app-icon-light.svg) | [`app-icon-dark.svg`](public/app-icon-dark.svg) |
+
+The app shows the full logo on `md` screens and up, and the square icon mark on smaller viewports. Both swap automatically with the active theme.
 
 ## Deploy
 

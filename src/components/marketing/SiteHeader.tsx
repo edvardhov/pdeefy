@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { BrandMark } from "@/components/BrandMark";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const NAV_LINKS = [
   { href: "#features", label: "Features" },
@@ -39,13 +41,13 @@ export function SiteHeader() {
         )}
       >
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <Link to="/" className="relative z-50 flex items-center gap-2">
-            <motion.span
-              className="font-display text-xl font-light tracking-tight"
-              whileHover={{ scale: 1.02 }}
-            >
-              pde<span className="text-primary">efy</span>
-            </motion.span>
+          <Link to="/" className="relative z-50 flex items-center">
+            <motion.div whileHover={{ scale: 1.02 }}>
+              <BrandMark
+                iconClassName="h-8 w-8"
+                logoClassName="h-9 w-auto"
+              />
+            </motion.div>
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">
@@ -72,7 +74,8 @@ export function SiteHeader() {
             )}
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1 sm:gap-2">
+            <ThemeToggle />
             <Button
               asChild
               size="sm"
