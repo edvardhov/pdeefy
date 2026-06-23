@@ -45,7 +45,7 @@ function AppShell() {
 
 export default function App() {
   return (
-    <BrowserRouter basename="/pdeefy">
+    <BrowserRouter>
       <ThemeProvider>
         <TooltipProvider>
           <AppShell />
