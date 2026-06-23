@@ -10,7 +10,11 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 const NAV_LINKS = [
   { href: "#features", label: "Features" },
   { href: "#dual-mode", label: "Dual-Mode" },
-  { href: "https://github.com", label: "GitHub", external: true },
+  {
+    href: "https://github.com/edvardhov/pdeefy",
+    label: "GitHub",
+    external: true,
+  },
 ];
 
 export function SiteHeader() {
@@ -43,10 +47,7 @@ export function SiteHeader() {
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link to="/" className="relative z-50 flex items-center">
             <motion.div whileHover={{ scale: 1.02 }}>
-              <BrandMark
-                iconClassName="h-8 w-8"
-                logoClassName="h-9 w-auto"
-              />
+              <BrandMark iconClassName="h-8 w-8" logoClassName="h-9 w-auto" />
             </motion.div>
           </Link>
 

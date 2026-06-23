@@ -113,7 +113,7 @@ export function Hero() {
                 className="h-12 w-full px-6 sm:w-auto"
               >
                 <a
-                  href="https://github.com"
+                  href="https://github.com/edvardhov/pdeefy"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

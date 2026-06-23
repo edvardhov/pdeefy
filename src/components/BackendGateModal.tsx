@@ -1,11 +1,11 @@
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown from "react-markdown";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog";
 
 const SETUP_INSTRUCTIONS = `
 ## Run the Local Power Backend
@@ -42,15 +42,19 @@ This feature needs server-side processing (OCR, Office conversion, deep compress
 4. **Return here** — the app will auto-detect the backend at \`http://localhost:8000\`.
 
 You can change the API URL in **Settings** (gear icon in the header).
-`
+`;
 
 interface BackendGateModalProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  toolName?: string
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  toolName?: string;
 }
 
-export function BackendGateModal({ open, onOpenChange, toolName }: BackendGateModalProps) {
+export function BackendGateModal({
+  open,
+  onOpenChange,
+  toolName,
+}: BackendGateModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[85vh] max-w-lg overflow-y-auto">
@@ -59,7 +63,7 @@ export function BackendGateModal({ open, onOpenChange, toolName }: BackendGateMo
           <DialogDescription>
             {toolName
               ? `"${toolName}" needs heavy server-side computing that isn't available in the browser demo.`
-              : 'This feature needs heavy server-side computing that is not available in the browser demo.'}
+              : "This feature needs heavy server-side computing that is not available in the browser demo."}
           </DialogDescription>
         </DialogHeader>
         <div className="markdown-body max-w-none">
@@ -67,5 +71,5 @@ export function BackendGateModal({ open, onOpenChange, toolName }: BackendGateMo
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

@@ -17,7 +17,7 @@ export function SiteFooter() {
               Tools
             </Link>
             <a
-              href="https://github.com"
+              href="https://github.com/edvardhov/pdeefy"
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors hover:text-foreground"
