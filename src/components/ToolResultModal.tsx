@@ -12,11 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import type { ToolOutputFile } from '@/features/types'
-import {
-  bytesToPdfFile,
-  downloadBytes,
-  downloadMultiple,
-} from '@/lib/download'
+import { bytesToPdfFile, downloadToolOutputs } from '@/lib/download'
 import { cn } from '@/lib/utils'
 
 interface ToolResultModalProps {
@@ -58,11 +54,7 @@ export function ToolResultModal({
 
     setDownloading(true)
     try {
-      if (outputs.length === 1) {
-        downloadBytes(outputs[0].data, outputs[0].name)
-      } else {
-        await downloadMultiple(outputs, downloadZipName ?? 'output.zip')
-      }
+      await downloadToolOutputs(outputs, downloadZipName)
       toast.success('Download started')
     } catch {
       toast.error('Download failed')

@@ -43,6 +43,8 @@ export interface ToolDefinition {
   preview?: boolean
   /** Minimum files required before Run is enabled */
   minFiles?: number
+  /** Cache output and show preview before download (merge, split, rotate) */
+  resultPreview?: boolean
   runner: (ctx: ToolContext) => Promise<ToolRunnerResult>
   paramFields?: ParamField[]
 }

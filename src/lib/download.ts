@@ -3,6 +3,20 @@ export function bytesToPdfFile(data: Uint8Array, filename: string): File {
   return new File([copy], filename, { type: 'application/pdf' })
 }
 
+export async function downloadToolOutputs(
+  outputs: DownloadItem[],
+  zipName?: string,
+): Promise<void> {
+  if (outputs.length === 0) return
+
+  if (outputs.length === 1) {
+    downloadBytes(outputs[0].data, outputs[0].name)
+    return
+  }
+
+  await downloadMultiple(outputs, zipName ?? 'output.zip')
+}
+
 export function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob)
   const anchor = document.createElement('a')

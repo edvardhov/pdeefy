@@ -46,6 +46,7 @@ export const TOOLS: ToolDefinition[] = [
     multiple: true,
     preview: true,
     minFiles: 2,
+    resultPreview: true,
     runner: runMerge,
   },
   {
@@ -57,6 +58,7 @@ export const TOOLS: ToolDefinition[] = [
     icon: Scissors,
     accepts: 'pdf',
     preview: true,
+    resultPreview: true,
     runner: runSplit,
     paramFields: [
       {
@@ -119,6 +121,7 @@ export const TOOLS: ToolDefinition[] = [
     icon: RotateCw,
     accepts: 'pdf',
     preview: true,
+    resultPreview: true,
     runner: runRotate,
     paramFields: [
       {

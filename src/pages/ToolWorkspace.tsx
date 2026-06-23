@@ -14,12 +14,14 @@ import {
 } from '@/components/ui/select'
 import { FileDropzone } from '@/components/FileDropzone'
 import { BackendGateModal } from '@/components/BackendGateModal'
+import { ToolResultBanner } from '@/components/ToolResultBanner'
 import { ToolResultModal } from '@/components/ToolResultModal'
 import { getToolById } from '@/features/registry'
 import type { ToolOutputFile } from '@/features/types'
+import { computeRunFingerprint } from '@/lib/toolRun'
 import { useAppStore } from '@/store/appStore'
 
-interface ToolResultState {
+interface CachedToolResult {
   outputs: ToolOutputFile[]
   downloadZipName?: string
 }
@@ -35,7 +37,9 @@ export function ToolWorkspace() {
   const [params, setParams] = useState<Record<string, string>>({})
   const [processing, setProcessing] = useState(false)
   const [showGate, setShowGate] = useState(false)
-  const [result, setResult] = useState<ToolResultState | null>(null)
+  const [cachedResult, setCachedResult] = useState<CachedToolResult | null>(null)
+  const [cachedFingerprint, setCachedFingerprint] = useState<string | null>(null)
+  const [resultModalOpen, setResultModalOpen] = useState(false)
 
   const defaultParams = useMemo(() => {
     const defaults: Record<string, string> = {}
@@ -47,9 +51,18 @@ export function ToolWorkspace() {
 
   const mergedParams = { ...defaultParams, ...params }
 
+  const inputFingerprint = useMemo(
+    () => computeRunFingerprint(files, mergedParams),
+    [files, mergedParams],
+  )
+
   useEffect(() => {
-    setResult(null)
-  }, [files])
+    if (cachedFingerprint !== null && cachedFingerprint !== inputFingerprint) {
+      setCachedResult(null)
+      setCachedFingerprint(null)
+      setResultModalOpen(false)
+    }
+  }, [inputFingerprint, cachedFingerprint])
 
   if (!tool) {
     return <Navigate to="/tools" replace />
@@ -61,6 +74,11 @@ export function ToolWorkspace() {
   const minFiles = tool.minFiles ?? 1
   const canRun = files.length >= minFiles
   const showPdfPreview = tool.preview && tool.accepts === 'pdf'
+  const usesResultPreview = tool.resultPreview === true
+  const hasValidCache =
+    usesResultPreview &&
+    cachedResult !== null &&
+    cachedFingerprint === inputFingerprint
 
   const handleRun = async () => {
     if (files.length < minFiles) {
@@ -80,11 +98,18 @@ export function ToolWorkspace() {
     setProcessing(true)
     try {
       const runResult = await tool.runner({ files, params: mergedParams, apiUrl })
+
       if (runResult.success && runResult.outputs?.length) {
-        setResult({
-          outputs: runResult.outputs,
-          downloadZipName: runResult.downloadZipName,
-        })
+        if (usesResultPreview) {
+          setCachedResult({
+            outputs: runResult.outputs,
+            downloadZipName: runResult.downloadZipName,
+          })
+          setCachedFingerprint(inputFingerprint)
+          setResultModalOpen(true)
+        }
+      } else if (runResult.success && !usesResultPreview) {
+        // Runners for other tools handle download + toast internally
       }
     } finally {
       setProcessing(false)
@@ -195,15 +220,23 @@ export function ToolWorkspace() {
           )
         })}
 
-        <Button
-          className="w-full"
-          size="lg"
-          onClick={handleRun}
-          disabled={processing || !canRun}
-        >
-          {processing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {processing ? 'Processing…' : `Run ${tool.name}`}
-        </Button>
+        {hasValidCache && cachedResult ? (
+          <ToolResultBanner
+            outputs={cachedResult.outputs}
+            downloadZipName={cachedResult.downloadZipName}
+            onView={() => setResultModalOpen(true)}
+          />
+        ) : (
+          <Button
+            className="w-full"
+            size="lg"
+            onClick={handleRun}
+            disabled={processing || !canRun}
+          >
+            {processing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {processing ? 'Processing…' : `Run ${tool.name}`}
+          </Button>
+        )}
 
         {!canRun && files.length > 0 && minFiles > 1 && (
           <p className="text-center text-sm text-muted-foreground">
@@ -214,15 +247,15 @@ export function ToolWorkspace() {
 
       <BackendGateModal open={showGate} onOpenChange={setShowGate} toolName={tool.name} />
 
-      <ToolResultModal
-        open={result !== null}
-        onOpenChange={(open) => {
-          if (!open) setResult(null)
-        }}
-        outputs={result?.outputs ?? []}
-        downloadZipName={result?.downloadZipName}
-        toolName={tool.name}
-      />
+      {usesResultPreview && cachedResult && (
+        <ToolResultModal
+          open={resultModalOpen}
+          onOpenChange={setResultModalOpen}
+          outputs={cachedResult.outputs}
+          downloadZipName={cachedResult.downloadZipName}
+          toolName={tool.name}
+        />
+      )}
     </>
   )
 }
