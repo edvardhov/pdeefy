@@ -122,8 +122,9 @@
   --input: #d2d6df;
   --ring: #ef233c;
 
+  --header-height: 4rem;
   --header-height-marketing: 4rem;
-  --header-height-app: 3.5rem;
+  --header-height-app: 4rem;
 }
 
 .dark {

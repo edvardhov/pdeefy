@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { SiteHeader } from '@/components/marketing/SiteHeader'
+import { SiteHeader } from '@/components/SiteHeader'
 import { SiteFooter } from '@/components/marketing/SiteFooter'
 
 interface MarketingLayoutProps {
@@ -9,7 +9,7 @@ interface MarketingLayoutProps {
 export function MarketingLayout({ children }: MarketingLayoutProps) {
   return (
     <div className="paper-grain gradient-mesh min-h-svh">
-      <SiteHeader />
+      <SiteHeader variant="marketing" />
       <div aria-hidden className="h-16 shrink-0" />
       {children}
       <SiteFooter />
