@@ -18,9 +18,16 @@ export interface ToolContext {
   apiUrl: string
 }
 
+export interface ToolOutputFile {
+  name: string
+  data: Uint8Array
+}
+
 export interface ToolRunnerResult {
   success: boolean
   message?: string
+  outputs?: ToolOutputFile[]
+  downloadZipName?: string
 }
 
 export interface ToolDefinition {
@@ -32,6 +39,10 @@ export interface ToolDefinition {
   icon: LucideIcon
   accepts: AcceptedKind
   multiple?: boolean
+  /** Show first-page PDF preview when files are loaded */
+  preview?: boolean
+  /** Minimum files required before Run is enabled */
+  minFiles?: number
   runner: (ctx: ToolContext) => Promise<ToolRunnerResult>
   paramFields?: ParamField[]
 }

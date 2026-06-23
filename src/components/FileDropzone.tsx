@@ -1,7 +1,8 @@
 import { useCallback, useRef, useState } from 'react'
-import { Upload, X, FileText, ImageIcon } from 'lucide-react'
+import { Upload, X, FileText, ImageIcon, Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { PdfPreviewModal } from '@/components/PdfViewer'
 
 export type AcceptedKind = 'pdf' | 'image' | 'any'
 
@@ -18,6 +19,7 @@ interface FileDropzoneProps {
   multiple?: boolean
   files: File[]
   onChange: (files: File[]) => void
+  showPdfPreview?: boolean
   className?: string
 }
 
@@ -50,11 +52,13 @@ export function FileDropzone({
   multiple = false,
   files,
   onChange,
+  showPdfPreview = false,
   className,
 }: FileDropzoneProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [dragOver, setDragOver] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [previewFile, setPreviewFile] = useState<File | null>(null)
 
   const addFiles = useCallback(
     (incoming: FileList | File[]) => {
@@ -148,19 +152,42 @@ export function FileDropzone({
                   ({(file.size / 1024 / 1024).toFixed(1)} MB)
                 </span>
               </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 shrink-0"
-                onClick={() => removeFile(index)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
+              <div className="flex shrink-0 items-center gap-0.5">
+                {showPdfPreview && file.type === 'application/pdf' && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 shrink-0"
+                    aria-label={`Preview ${file.name}`}
+                    onClick={() => setPreviewFile(file)}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                )}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 shrink-0"
+                  aria-label={`Remove ${file.name}`}
+                  onClick={() => removeFile(index)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             </li>
           ))}
         </ul>
       )}
+
+      <PdfPreviewModal
+        file={previewFile}
+        open={previewFile !== null}
+        onOpenChange={(open) => {
+          if (!open) setPreviewFile(null)
+        }}
+      />
     </div>
   )
 }

@@ -44,6 +44,8 @@ export const TOOLS: ToolDefinition[] = [
     icon: Combine,
     accepts: 'pdf',
     multiple: true,
+    preview: true,
+    minFiles: 2,
     runner: runMerge,
   },
   {
@@ -54,6 +56,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: Scissors,
     accepts: 'pdf',
+    preview: true,
     runner: runSplit,
     paramFields: [
       {
@@ -82,6 +85,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: FileOutput,
     accepts: 'pdf',
+    preview: true,
     runner: notImplementedRunner,
   },
   {
@@ -92,6 +96,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: Trash2,
     accepts: 'pdf',
+    preview: true,
     runner: notImplementedRunner,
   },
   {
@@ -102,6 +107,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: LayoutGrid,
     accepts: 'pdf',
+    preview: true,
     runner: notImplementedRunner,
   },
   {
@@ -112,6 +118,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: RotateCw,
     accepts: 'pdf',
+    preview: true,
     runner: runRotate,
     paramFields: [
       {
@@ -137,6 +144,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: PenLine,
     accepts: 'pdf',
+    preview: true,
     runner: notImplementedRunner,
   },
   {
@@ -147,6 +155,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: Type,
     accepts: 'pdf',
+    preview: true,
     runner: notImplementedRunner,
   },
   {
@@ -157,6 +166,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: Image,
     accepts: 'pdf',
+    preview: true,
     runner: notImplementedRunner,
   },
   {
@@ -167,6 +177,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: Droplets,
     accepts: 'pdf',
+    preview: true,
     runner: notImplementedRunner,
   },
 
@@ -179,6 +190,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: Lock,
     accepts: 'pdf',
+    preview: true,
     runner: runPasswordProtect,
     paramFields: [
       {
@@ -203,6 +215,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: LockOpen,
     accepts: 'pdf',
+    preview: true,
     runner: notImplementedRunner,
   },
   {
@@ -213,6 +226,7 @@ export const TOOLS: ToolDefinition[] = [
     mode: 'client',
     icon: Layers,
     accepts: 'pdf',
+    preview: true,
     runner: notImplementedRunner,
   },
 

@@ -1,3 +1,8 @@
+export function bytesToPdfFile(data: Uint8Array, filename: string): File {
+  const copy = new Uint8Array(data)
+  return new File([copy], filename, { type: 'application/pdf' })
+}
+
 export function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob)
   const anchor = document.createElement('a')

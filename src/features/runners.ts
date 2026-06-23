@@ -1,6 +1,6 @@
 import { toast } from 'sonner'
 import { postFile } from '@/lib/api'
-import { baseName, downloadBlob, downloadBytes, downloadMultiple } from '@/lib/download'
+import { baseName, downloadBlob, downloadBytes } from '@/lib/download'
 import { runPdfWorkerOrThrow } from '@/lib/workerClient'
 import type { ToolContext, ToolRunnerResult } from '@/features/types'
 
@@ -13,9 +13,10 @@ export async function runMerge(ctx: ToolContext): Promise<ToolRunnerResult> {
   try {
     const result = await runPdfWorkerOrThrow('merge', ctx.files)
     if (!result.data) throw new Error('No output generated')
-    downloadBytes(result.data, 'merged.pdf')
-    toast.success('PDFs merged successfully')
-    return { success: true }
+    return {
+      success: true,
+      outputs: [{ name: 'merged.pdf', data: result.data }],
+    }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Merge failed'
     toast.error(message)
@@ -33,9 +34,11 @@ export async function runSplit(ctx: ToolContext): Promise<ToolRunnerResult> {
       baseFilename,
     })
     if (!result.outputs?.length) throw new Error('No output generated')
-    await downloadMultiple(result.outputs, `${baseFilename}_splits.zip`)
-    toast.success('PDF split successfully')
-    return { success: true }
+    return {
+      success: true,
+      outputs: result.outputs,
+      downloadZipName: `${baseFilename}_splits.zip`,
+    }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Split failed'
     toast.error(message)
@@ -48,9 +51,10 @@ export async function runRotate(ctx: ToolContext): Promise<ToolRunnerResult> {
     const angle = Number.parseInt(ctx.params.angle ?? '90', 10) as 90 | 180 | 270
     const result = await runPdfWorkerOrThrow('rotate', ctx.files, { angle })
     if (!result.data) throw new Error('No output generated')
-    downloadBytes(result.data, `rotated_${ctx.files[0].name}`)
-    toast.success('PDF rotated successfully')
-    return { success: true }
+    return {
+      success: true,
+      outputs: [{ name: `rotated_${ctx.files[0].name}`, data: result.data }],
+    }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Rotate failed'
     toast.error(message)
