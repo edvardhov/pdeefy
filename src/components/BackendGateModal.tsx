@@ -13,36 +13,33 @@ function buildSetupInstructions() {
   return `
 ## Run the Local Power Backend
 
-This feature needs server-side processing (OCR, Office conversion, deep compression). The live demo on GitHub Pages runs entirely in your browser — start the local FastAPI backend to unlock it.
+This feature needs server-side processing (OCR, Office conversion, deep compression). The live demo on GitHub Pages runs entirely in your browser — start the local backend to unlock it.
 
-### Prerequisites
+### Docker (recommended)
 
-- **Python 3.11+** (pyenv recommended)
-- **Tesseract OCR** (\`brew install tesseract\` on macOS)
-- **Ghostscript** (\`brew install ghostscript\`) for deep compression
-
-### Steps
-
-1. **Clone the repository**
+1. **Clone and start**
    \`\`\`bash
    git clone ${LINKS.githubRepo}.git
    cd pdeefy
+   docker compose up -d
    \`\`\`
 
-2. **Create a virtual environment**
-   \`\`\`bash
-   cd backend
-   python3.11 -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
-   \`\`\`
+2. **Return here** — the app auto-detects the backend at \`${API.DEFAULT_URL}\`.
 
-3. **Start the server**
-   \`\`\`bash
-   uvicorn app.main:app --reload --port 8000
-   \`\`\`
+Tesseract and Ghostscript are included in the Docker image. Open [http://localhost:5173](http://localhost:5173) for the full local app, or keep using GitHub Pages with only the backend running.
 
-4. **Return here** — the app will auto-detect the backend at \`${API.DEFAULT_URL}\`.
+### Manual setup
+
+Requires **Python 3.11+**, **Tesseract** (\`brew install tesseract\`), and **Ghostscript** (\`brew install ghostscript\`).
+
+\`\`\`bash
+git clone ${LINKS.githubRepo}.git
+cd pdeefy/backend
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+\`\`\`
 
 You can change the API URL in **Settings** (gear icon in the header).
 `;

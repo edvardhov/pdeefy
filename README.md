@@ -25,11 +25,11 @@
 
 ## Why Pdeefy
 
-| | |
-|---|---|
+|                        |                                                                                                                 |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------- |
 | **Private by default** | Core tools run entirely in the browser via Web Workers — your files never leave your machine in Live Demo Mode. |
-| **Dual-mode** | Use the hosted demo instantly, or connect a local FastAPI backend for OCR, Office export, and deep compression. |
-| **Modern stack** | React 19, TypeScript, Tailwind v4, and `pdf-lib` — built to extend, not to lock you in. |
+| **Dual-mode**          | Use the hosted demo instantly, or connect a local FastAPI backend for OCR, Office export, and deep compression. |
+| **Modern stack**       | React 19, TypeScript, Tailwind v4, and `pdf-lib` — built to extend, not to lock you in.                         |
 
 ## Dual-mode architecture
 
@@ -46,9 +46,9 @@ flowchart TB
   end
 ```
 
-| Mode | Where it runs | Best for |
-|------|---------------|----------|
-| **Live Demo** | GitHub Pages, 100% client-side | Everyday PDF edits, no install |
+| Mode            | Where it runs                                       | Best for                                       |
+| --------------- | --------------------------------------------------- | ---------------------------------------------- |
+| **Live Demo**   | GitHub Pages, 100% client-side                      | Everyday PDF edits, no install                 |
 | **Local Power** | Your machine + [FastAPI backend](backend/README.md) | OCR, DOCX/XLSX export, Ghostscript compression |
 
 ## Features
@@ -62,7 +62,7 @@ flowchart TB
 - Rotate, flatten, fill & sign, add text & images
 - Password protect & unlock
 - JPG / PNG → PDF, Markdown → PDF
-- Watermark *(and more in the registry)*
+- Watermark _(and more in the registry)_
 
 </details>
 
@@ -80,7 +80,35 @@ flowchart TB
 
 ## Quick start
 
-### Frontend (Live Demo locally)
+### Docker
+
+Requires [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or Docker Engine + Compose).
+
+```bash
+git clone https://github.com/edvardhov/pdeefy.git
+cd pdeefy
+docker compose up -d
+```
+
+Open [http://localhost:5173/](http://localhost:5173/) — frontend and backend (OCR, Office export, deep compression) are ready. The app auto-detects the backend at `http://localhost:8000/api/health`.
+
+Stop the stack:
+
+```bash
+docker compose down
+```
+
+**Production-style local build** (static frontend via nginx on port 4173, no hot reload):
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+Open [http://localhost:4173/](http://localhost:4173/)
+
+### Manual setup (without Docker)
+
+#### Frontend (Live Demo locally)
 
 ```bash
 git clone https://github.com/edvardhov/pdeefy.git
@@ -91,7 +119,7 @@ npm run dev
 
 Open [http://localhost:5173/](http://localhost:5173/)
 
-### Backend (optional — Local Power Mode)
+#### Backend (Local Power Mode)
 
 ```bash
 cd backend
@@ -105,13 +133,17 @@ The app auto-detects the backend at `http://localhost:8000/api/health`. Override
 
 Full backend setup: [backend/README.md](backend/README.md)
 
+### GitHub Pages + local backend
+
+The [live demo](https://edvardhov.github.io/pdeefy/) runs entirely in the browser for core tools. Run `docker compose up -d` (backend only is enough) to unlock Local Power Mode from the hosted site — the app polls `http://localhost:8000/api/health` from your browser. Works in Chrome, Edge, and Firefox; Safari may block HTTPS → `http://localhost` mixed content.
+
 ## Stack
 
-| Layer | Tech |
-|-------|------|
-| Frontend | Vite · React 19 · TypeScript · Tailwind CSS v4 · Shadcn/ui |
-| PDF (client) | pdf-lib · Web Workers · pdfjs-dist |
-| Backend | FastAPI · PyMuPDF · python-docx · pytesseract |
+| Layer        | Tech                                                       |
+| ------------ | ---------------------------------------------------------- |
+| Frontend     | Vite · React 19 · TypeScript · Tailwind CSS v4 · Shadcn/ui |
+| PDF (client) | pdf-lib · Web Workers · pdfjs-dist                         |
+| Backend      | FastAPI · PyMuPDF · python-docx · pytesseract              |
 
 ## Deploy
 

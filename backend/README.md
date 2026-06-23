@@ -2,13 +2,33 @@
 
 Local FastAPI server for heavy PDF processing (OCR, Office conversion, deep compression).
 
-## Requirements
+## Docker
+
+From the repository root:
+
+```bash
+docker compose up -d
+```
+
+The backend runs at `http://localhost:8000`. Tesseract OCR and Ghostscript are pre-installed in the image — no `brew install` required.
+
+Health check: `GET http://localhost:8000/api/health`
+
+Backend only (if you run the frontend separately):
+
+```bash
+docker compose up -d backend
+```
+
+## Manual setup
+
+### Requirements
 
 - **Python 3.11+**
 - **Tesseract OCR** — `brew install tesseract` (macOS)
 - **Ghostscript** (optional, for deep compression) — `brew install ghostscript`
 
-## Setup
+### Setup
 
 ```bash
 cd backend
@@ -17,7 +37,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Run
+### Run
 
 ```bash
 uvicorn app.main:app --reload --port 8000
@@ -27,9 +47,9 @@ Health check: `GET http://localhost:8000/api/health`
 
 ## Endpoints
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/health` | Health check |
-| POST | `/api/convert/pdf-to-word` | PDF → DOCX |
-| POST | `/api/ocr` | OCR scanned PDF |
-| POST | `/api/edit/compress` | Deep PDF compression |
+| Method | Path                       | Description          |
+| ------ | -------------------------- | -------------------- |
+| GET    | `/api/health`              | Health check         |
+| POST   | `/api/convert/pdf-to-word` | PDF → DOCX           |
+| POST   | `/api/ocr`                 | OCR scanned PDF      |
+| POST   | `/api/edit/compress`       | Deep PDF compression |
