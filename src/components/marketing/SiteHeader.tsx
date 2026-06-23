@@ -38,10 +38,8 @@ export function SiteHeader() {
     <>
       <header
         className={cn(
-          "fixed top-0 z-50 w-full transition-all duration-500",
-          scrolled || mobileOpen
-            ? "border-b border-border/60 bg-background/90 backdrop-blur-xl shadow-sm"
-            : "bg-transparent",
+          "fixed top-0 z-50 w-full border-b border-border/60 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80 transition-shadow duration-500",
+          scrolled || mobileOpen ? "shadow-sm" : "shadow-none",
         )}
       >
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">

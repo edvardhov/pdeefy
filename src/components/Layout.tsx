@@ -15,7 +15,7 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <div className="min-h-svh bg-background">
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="fixed top-0 z-50 w-full border-b border-border/60 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
           <div className="flex items-center gap-4">
             <Link to="/tools" className="flex items-center">
@@ -54,6 +54,7 @@ export function Layout({ children }: LayoutProps) {
           </div>
         </div>
       </header>
+      <div aria-hidden className="h-14 shrink-0" />
       <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
     </div>
   )

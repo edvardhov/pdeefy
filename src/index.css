@@ -121,6 +121,9 @@
   --border: #d2d6df;
   --input: #d2d6df;
   --ring: #ef233c;
+
+  --header-height-marketing: 4rem;
+  --header-height-app: 3.5rem;
 }
 
 .dark {
@@ -151,11 +154,17 @@
 }
 
 @layer base {
+  html {
+    scroll-padding-top: var(--header-height-marketing);
+  }
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background font-sans text-foreground antialiased;
+  }
+  section[id] {
+    scroll-margin-top: calc(var(--header-height-marketing) + 0.75rem);
   }
   a:focus-visible,
   button:focus-visible {
@@ -187,7 +196,7 @@
     pointer-events: none;
     position: fixed;
     inset: 0;
-    z-index: 50;
+    z-index: 20;
     opacity: 0.03;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
