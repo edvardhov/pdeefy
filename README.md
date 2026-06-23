@@ -1,72 +1,126 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="public/app-logo-dark.svg">
-  <img alt="Pdeefy" src="public/app-logo-light.svg" height="72">
-</picture>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="public/app-logo-dark.svg">
+    <img alt="Pdeefy" src="public/app-logo-light.svg" width="340">
+  </picture>
+</p>
 
-Open-source, web-based PDF tool suite with a **dual-mode architecture**:
+<p align="center">
+  <strong>PDF tools that stay in your browser.</strong><br>
+  Merge, split, convert, and protect documents — fast, private, and open source.
+</p>
 
-- **Live Demo Mode** (GitHub Pages) — lightweight tools run entirely in your browser via Web Workers and `pdf-lib`.
-- **Local Power Mode** (localhost backend) — unlocks OCR, PDF-to-Office conversion, and deep compression via a local FastAPI server.
+<p align="center">
+  <a href="https://edvardhov.github.io/pdeefy/"><strong>Try the live demo →</strong></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/edvardhov/pdeefy/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+  <a href="https://edvardhov.github.io/pdeefy/"><img src="https://img.shields.io/badge/demo-GitHub%20Pages-ef233c" alt="Live demo"></a>
+  <img src="https://img.shields.io/badge/tools-22%2B-space%20indigo" alt="22+ tools">
+  <img src="https://img.shields.io/badge/client--side-no%20uploads-success" alt="No uploads for core tools">
+</p>
+
+---
+
+## Why Pdeefy
+
+| | |
+|---|---|
+| **Private by default** | Core tools run entirely in the browser via Web Workers — your files never leave your machine in Live Demo Mode. |
+| **Dual-mode** | Use the hosted demo instantly, or connect a local FastAPI backend for OCR, Office export, and deep compression. |
+| **Modern stack** | React 19, TypeScript, Tailwind v4, and `pdf-lib` — built to extend, not to lock you in. |
+
+## Dual-mode architecture
+
+```mermaid
+flowchart TB
+  subgraph demo ["Live Demo Mode · GitHub Pages"]
+    A[Browser] --> B[Web Workers + pdf-lib]
+    B --> C[Merge · Split · Rotate · Protect · …]
+  end
+
+  subgraph power ["Local Power Mode · localhost"]
+    A --> D[FastAPI backend]
+    D --> E[OCR · PDF→Office · Deep compress]
+  end
+```
+
+| Mode | Where it runs | Best for |
+|------|---------------|----------|
+| **Live Demo** | GitHub Pages, 100% client-side | Everyday PDF edits, no install |
+| **Local Power** | Your machine + [FastAPI backend](backend/README.md) | OCR, DOCX/XLSX export, Ghostscript compression |
 
 ## Features
 
-### Always available (client-side)
+<details open>
+<summary><strong>Always available</strong> — no backend, no upload</summary>
 
-- Merge, Split, Rotate PDF
-- JPG/PNG to PDF
-- Password Protect
-- *(More tools registered — coming soon)*
+<br>
 
-### Backend required
+- Merge, split, extract, delete & reorder pages
+- Rotate, flatten, fill & sign, add text & images
+- Password protect & unlock
+- JPG / PNG → PDF, Markdown → PDF
+- Watermark *(and more in the registry)*
 
-- PDF to Word (DOCX)
+</details>
+
+<details>
+<summary><strong>Local Power Mode</strong> — requires the backend</summary>
+
+<br>
+
+- PDF → Word (DOCX)
+- PDF → Excel / PowerPoint
 - OCR (Tesseract)
-- Deep Compress (Ghostscript / PyMuPDF fallback)
+- Deep compress (Ghostscript / PyMuPDF)
 
-## Quick start (frontend)
+</details>
+
+## Quick start
+
+### Frontend (Live Demo locally)
 
 ```bash
+git clone https://github.com/edvardhov/pdeefy.git
+cd pdeefy
 npm install
 npm run dev
 ```
 
 Open [http://localhost:5173/pdeefy/](http://localhost:5173/pdeefy/)
 
-## Local Power Mode (backend)
-
-See [backend/README.md](backend/README.md).
+### Backend (optional — Local Power Mode)
 
 ```bash
 cd backend
 python3.11 -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-The frontend auto-detects the backend at `http://localhost:8000/api/health`. Change the URL in **Settings**.
+The app auto-detects the backend at `http://localhost:8000/api/health`. Override the URL in **Settings** if needed.
+
+Full backend setup: [backend/README.md](backend/README.md)
 
 ## Stack
 
 | Layer | Tech |
 |-------|------|
-| Frontend | Vite, React 19, TypeScript, Tailwind CSS v4, Shadcn/ui |
-| PDF (client) | pdf-lib, Web Workers |
-| Backend | FastAPI, PyMuPDF, python-docx, pytesseract |
-
-## Brand assets
-
-| Asset | Light | Dark |
-|-------|-------|------|
-| Full logo (wordmark) | [`app-logo-light.svg`](public/app-logo-light.svg) | [`app-logo-dark.svg`](public/app-logo-dark.svg) |
-| Icon mark | [`app-icon-light.svg`](public/app-icon-light.svg) | [`app-icon-dark.svg`](public/app-icon-dark.svg) |
-
-The app shows the full logo on `md` screens and up, and the square icon mark on smaller viewports. Both swap automatically with the active theme.
+| Frontend | Vite · React 19 · TypeScript · Tailwind CSS v4 · Shadcn/ui |
+| PDF (client) | pdf-lib · Web Workers · pdfjs-dist |
+| Backend | FastAPI · PyMuPDF · python-docx · pytesseract |
 
 ## Deploy
 
-GitHub Pages deploys automatically from `main` via `.github/workflows/deploy.yml`. Set repository Pages source to **GitHub Actions**.
+Pushes to `main` deploy to GitHub Pages via [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). Set the repository **Pages** source to **GitHub Actions**.
+
+## Brand assets
+
+Logo SVGs (light / dark icon + wordmark lockups) live in [`public/`](public/). The app uses the full lockup on large screens and the square icon on mobile, swapping with the active theme.
 
 ## License
 
-MIT
+[MIT](LICENSE) · © [Edvard Hovhannisyan](https://github.com/edvardhov)
