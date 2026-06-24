@@ -42,3 +42,30 @@ MIME_PDF = "application/pdf"
 MIME_DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 MIME_XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 MIME_PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+MIME_ZIP = "application/zip"
+MIME_TXT = "text/plain"
+MIME_HTML = "text/html"
+MIME_JPEG = "image/jpeg"
+MIME_PNG = "image/png"
+
+# Allowed extensions for Office -> PDF conversion (LibreOffice)
+OFFICE_TO_PDF_EXTS = {
+    "docx",
+    "doc",
+    "odt",
+    "rtf",
+    "xlsx",
+    "xls",
+    "ods",
+    "csv",
+    "pptx",
+    "ppt",
+    "odp",
+}
+
+HTML_TO_PDF_EXTS = {"html", "htm"}
+
+TO_PDF_EXTS = OFFICE_TO_PDF_EXTS | HTML_TO_PDF_EXTS
+
+# Allowed extensions for raster image -> PDF conversion
+IMAGE_TO_PDF_EXTS = {"jpg", "jpeg", "png", "webp", "bmp", "gif", "tiff", "tif"}

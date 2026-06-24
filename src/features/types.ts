@@ -4,7 +4,7 @@ import type { WorkerOp } from '@/workers/types'
 
 export type { ToolCategory }
 export type ToolMode = 'client' | 'backend'
-export type AcceptedKind = 'pdf' | 'image' | 'text' | 'any'
+export type AcceptedKind = 'pdf' | 'image' | 'raster' | 'text' | 'document' | 'spreadsheet' | 'presentation' | 'html' | 'any'
 export type ToolOutputDelivery = 'download' | 'preview'
 
 export type EditorCapability =

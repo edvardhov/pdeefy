@@ -1,5 +1,5 @@
 import type { ParamField, ToolDefinition, ToolRunnerResult } from '@/features/types'
-import { MIME } from '@/constants/mime'
+import { MIME, matchesAcceptKind } from '@/constants/mime'
 import { downloadToolOutputs } from '@/lib/download'
 import { toast } from 'sonner'
 
@@ -117,27 +117,7 @@ export function getMinFilesHintMessage(tool: ToolDefinition): string | null {
 
 export function canPreviewInputFile(tool: ToolDefinition, file: File): boolean {
   if (!resolveToolFeatures(tool).inputPreview) return false
-
-  if (tool.accepts === 'pdf') return file.type === MIME.pdf
-  if (tool.accepts === 'image') return file.type.startsWith('image/')
-  if (tool.accepts === 'text') {
-    return (
-      file.type === MIME.plain ||
-      file.type === MIME.markdown ||
-      /\.(md|markdown|txt)$/i.test(file.name)
-    )
-  }
-  if (tool.accepts === 'any') {
-    return (
-      file.type === MIME.pdf ||
-      file.type.startsWith('image/') ||
-      file.type === MIME.plain ||
-      file.type === MIME.markdown ||
-      /\.(md|markdown|txt)$/i.test(file.name)
-    )
-  }
-
-  return false
+  return matchesAcceptKind(file, tool.accepts)
 }
 
 export function canPreviewOutputMime(mimeType: string, tool: ToolDefinition): boolean {

@@ -3,7 +3,7 @@ import { Upload, X, FileText, ImageIcon, Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { PdfPreviewModal } from '@/components/PdfViewer'
-import { ACCEPT_MAP, MIME } from '@/constants/mime'
+import { ACCEPT_HINTS, ACCEPT_MAP, matchesAcceptKind } from '@/constants/mime'
 import { FILE_LIMITS } from '@/constants/files'
 import type { AcceptedKind } from '@/features/types'
 
@@ -21,31 +21,7 @@ function validateFile(file: File, accept: AcceptedKind): string | null {
     return `${file.name} exceeds ${FILE_LIMITS.maxLabel} limit`
   }
 
-  if (accept === 'pdf' && file.type !== MIME.pdf) {
-    return `${file.name} is not a PDF`
-  }
-
-  if (accept === 'image' && !file.type.startsWith('image/')) {
-    return `${file.name} is not an image`
-  }
-
-  if (
-    accept === 'text' &&
-    file.type !== MIME.plain &&
-    file.type !== MIME.markdown &&
-    !/\.(md|markdown|txt)$/i.test(file.name)
-  ) {
-    return `${file.name} is not a text or markdown file`
-  }
-
-  if (
-    accept === 'any' &&
-    file.type !== MIME.pdf &&
-    !file.type.startsWith('image/') &&
-    file.type !== MIME.plain &&
-    file.type !== MIME.markdown &&
-    !/\.(md|markdown|txt)$/i.test(file.name)
-  ) {
+  if (!matchesAcceptKind(file, accept)) {
     return `${file.name} is not a supported file type`
   }
 
@@ -119,12 +95,7 @@ export function FileDropzone({
       >
         <Upload className="mb-3 h-10 w-10 text-muted-foreground" />
         <p className="text-sm font-medium">Drop files here or click to browse</p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          {accept === 'pdf' && 'PDF files only · max 100 MB'}
-          {accept === 'image' && 'JPG/PNG images · max 100 MB'}
-          {accept === 'text' && 'Markdown or text files · max 100 MB'}
-          {accept === 'any' && 'PDF, image, or text files · max 100 MB'}
-        </p>
+        <p className="mt-1 text-xs text-muted-foreground">{ACCEPT_HINTS[accept]}</p>
         <input
           ref={inputRef}
           type="file"

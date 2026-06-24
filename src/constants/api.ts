@@ -6,6 +6,11 @@ export const API = {
   HEALTH_STATUS_OK: 'ok',
   paths: {
     health: '/api/health',
+    toPdf: '/api/convert/to-pdf',
+    imageToPdf: '/api/convert/image-to-pdf',
+    pdfToImages: '/api/convert/pdf-to-images',
+    pdfToText: '/api/convert/pdf-to-text',
+    pdfToHtml: '/api/convert/pdf-to-html',
     pdfToWord: '/api/convert/pdf-to-word',
     pdfToExcel: '/api/convert/pdf-to-excel',
     pdfToPpt: '/api/convert/pdf-to-ppt',

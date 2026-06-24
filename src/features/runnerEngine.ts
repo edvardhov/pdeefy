@@ -134,11 +134,15 @@ async function runBackendTool(
     throw new Error('Not a backend tool')
   }
 
+  const params = { ...ctx.params }
+  if (tool.id === 'pdf-to-jpg') params.format = 'jpg'
+  if (tool.id === 'pdf-to-png') params.format = 'png'
+
   const blob = await postFile({
     apiUrl: ctx.apiUrl,
     endpoint: tool.execution.endpoint,
     file: ctx.files[0],
-    params: ctx.params,
+    params,
   })
 
   const name = buildOutputName(ctx.files[0]?.name, tool.output.naming)
