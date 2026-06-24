@@ -3,22 +3,16 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { FileDropzone } from '@/components/FileDropzone'
 import { BackendGateModal } from '@/components/BackendGateModal'
+import { ParamFieldInput } from '@/components/ParamFieldInput'
+import { PdfEditorWorkspace } from '@/components/editors/PdfEditorWorkspace'
 import { ToolPageHeader } from '@/components/ToolPageHeader'
 import { ToolResultBanner } from '@/components/ToolResultBanner'
 import { ToolResultModal } from '@/components/ToolResultModal'
 import { ROUTES } from '@/constants/routes'
 import { getToolById } from '@/features/registry'
+import { resolveRunner } from '@/features/runnerEngine'
 import {
   canPreviewInputFile,
   canRunTool,
@@ -27,10 +21,12 @@ import {
   getDefaultParams,
   getMinFilesHintMessage,
   getMinFilesErrorMessage,
+  getRequiredParamsErrorMessage,
   isParamFieldVisible,
   resolveToolFeatures,
   usesResultCache,
 } from '@/features/toolFeatures'
+import { getToolMode, isEditorTool } from '@/features/types'
 import { useToolResultCache } from '@/hooks/useToolResultCache'
 import { useAppStore } from '@/store/appStore'
 
@@ -43,15 +39,19 @@ export function ToolWorkspace() {
 
   const [files, setFiles] = useState<File[]>([])
   const [params, setParams] = useState<Record<string, string>>({})
+  const [auxFiles, setAuxFiles] = useState<Record<string, File>>({})
   const [processing, setProcessing] = useState(false)
   const [showGate, setShowGate] = useState(false)
 
   const defaultParams = useMemo(() => (tool ? getDefaultParams(tool) : {}), [tool])
-  const mergedParams = { ...defaultParams, ...params }
+  const mergedParams = useMemo(
+    () => ({ ...defaultParams, ...params }),
+    [defaultParams, params],
+  )
 
   const inputFingerprint = useMemo(
-    () => computeToolRunFingerprint(files, mergedParams),
-    [files, mergedParams],
+    () => computeToolRunFingerprint(files, mergedParams, auxFiles),
+    [files, mergedParams, auxFiles],
   )
 
   const resultCacheEnabled = tool ? usesResultCache(tool) : false
@@ -68,24 +68,30 @@ export function ToolWorkspace() {
   }
 
   const features = resolveToolFeatures(tool)
-  const needsBackend = tool.mode === 'backend' && !isBackendConnected
-  const canRun = canRunTool(tool, files.length)
+  const mode = getToolMode(tool)
+  const needsBackend = mode === 'backend' && !isBackendConnected
+  const canRun = canRunTool(tool, files.length, mergedParams, auxFiles)
   const minFilesHint = getMinFilesHintMessage(tool)
 
   const handleRun = async () => {
-    if (!canRunTool(tool, files.length)) {
-      toast.error(getMinFilesErrorMessage(tool))
+    if (!canRunTool(tool, files.length, mergedParams, auxFiles)) {
+      if (files.length < features.minFiles) {
+        toast.error(getMinFilesErrorMessage(tool))
+      } else {
+        toast.error(getRequiredParamsErrorMessage(tool, mergedParams, auxFiles))
+      }
       return
     }
 
-    if (tool.mode === 'backend' && !isBackendConnected) {
+    if (mode === 'backend' && !isBackendConnected) {
       setShowGate(true)
       return
     }
 
     setProcessing(true)
     try {
-      const runResult = await tool.runner({ files, params: mergedParams, apiUrl })
+      const runner = resolveRunner(tool)
+      const runResult = await runner({ files, params: mergedParams, apiUrl, auxFiles })
       const delivery = await deliverToolResult(tool, runResult)
 
       if (delivery === 'cached') {
@@ -112,6 +118,15 @@ export function ToolWorkspace() {
     )
   }
 
+  if (isEditorTool(tool)) {
+    return (
+      <>
+        <ToolPageHeader icon={tool.icon} name={tool.name} description={tool.description} />
+        <PdfEditorWorkspace tool={tool} />
+      </>
+    )
+  }
+
   return (
     <>
       <ToolPageHeader icon={tool.icon} name={tool.name} description={tool.description} />
@@ -128,44 +143,26 @@ export function ToolWorkspace() {
         {tool.paramFields?.map((field) => {
           if (!isParamFieldVisible(field, mergedParams)) return null
 
-          if (field.type === 'select') {
-            return (
-              <div key={field.key} className="space-y-2">
-                <Label>{field.label}</Label>
-                <Select
-                  value={mergedParams[field.key] ?? field.defaultValue}
-                  onValueChange={(value) =>
-                    setParams((prev) => ({ ...prev, [field.key]: value }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {field.options?.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )
-          }
-
           return (
-            <div key={field.key} className="space-y-2">
-              <Label htmlFor={field.key}>{field.label}</Label>
-              <Input
-                id={field.key}
-                type={field.type === 'password' ? 'password' : 'text'}
-                placeholder={field.placeholder}
-                value={mergedParams[field.key] ?? ''}
-                onChange={(e) =>
-                  setParams((prev) => ({ ...prev, [field.key]: e.target.value }))
-                }
-              />
-            </div>
+            <ParamFieldInput
+              key={field.key}
+              field={field}
+              value={mergedParams[field.key] ?? ''}
+              onChange={(value) =>
+                setParams((prev) => ({ ...prev, [field.key]: value }))
+              }
+              onFileChange={
+                field.type === 'file'
+                  ? (file) =>
+                      setAuxFiles((prev) => {
+                        const next = { ...prev }
+                        if (file) next[field.key] = file
+                        else delete next[field.key]
+                        return next
+                      })
+                  : undefined
+              }
+            />
           )
         })}
 

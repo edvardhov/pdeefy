@@ -30,9 +30,21 @@ function validateFile(file: File, accept: AcceptedKind): string | null {
   }
 
   if (
+    accept === 'text' &&
+    file.type !== MIME.plain &&
+    file.type !== MIME.markdown &&
+    !/\.(md|markdown|txt)$/i.test(file.name)
+  ) {
+    return `${file.name} is not a text or markdown file`
+  }
+
+  if (
     accept === 'any' &&
     file.type !== MIME.pdf &&
-    !file.type.startsWith('image/')
+    !file.type.startsWith('image/') &&
+    file.type !== MIME.plain &&
+    file.type !== MIME.markdown &&
+    !/\.(md|markdown|txt)$/i.test(file.name)
   ) {
     return `${file.name} is not a supported file type`
   }
@@ -110,7 +122,8 @@ export function FileDropzone({
         <p className="mt-1 text-xs text-muted-foreground">
           {accept === 'pdf' && 'PDF files only · max 100 MB'}
           {accept === 'image' && 'JPG/PNG images · max 100 MB'}
-          {accept === 'any' && 'PDF or image files · max 100 MB'}
+          {accept === 'text' && 'Markdown or text files · max 100 MB'}
+          {accept === 'any' && 'PDF, image, or text files · max 100 MB'}
         </p>
         <input
           ref={inputRef}

@@ -69,3 +69,24 @@ async def compress_pdf(file: UploadFile = File(...)) -> StreamingResponse:
         media_type=MIME_PDF,
         headers={"Content-Disposition": f'attachment; filename="compressed_{stem}.pdf"'},
     )
+
+
+@router.post("/repair")
+async def repair_pdf(file: UploadFile = File(...)) -> StreamingResponse:
+    pdf_bytes = await read_validated_pdf(file)
+
+    try:
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        buffer = io.BytesIO()
+        doc.save(buffer, garbage=4, deflate=True, clean=True)
+        doc.close()
+        result = buffer.getvalue()
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Repair failed: {exc}") from exc
+
+    stem = Path(file.filename).stem
+    return StreamingResponse(
+        io.BytesIO(result),
+        media_type=MIME_PDF,
+        headers={"Content-Disposition": f'attachment; filename="repaired_{stem}.pdf"'},
+    )

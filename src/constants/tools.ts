@@ -16,14 +16,3 @@ export const FEATURED_TOOL_IDS = [
   'pdf-to-word',
   'ocr',
 ] as const
-
-export const IMPLEMENTED_TOOL_IDS = new Set([
-  'merge',
-  'split',
-  'rotate',
-  'password-protect',
-  'jpg-to-pdf',
-  'pdf-to-word',
-  'ocr',
-  'compress',
-])

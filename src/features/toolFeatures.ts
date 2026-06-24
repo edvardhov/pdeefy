@@ -24,31 +24,64 @@ export function resolveToolFeatures(tool: ToolDefinition): ResolvedToolFeatures 
   return {
     ...DEFAULT_FEATURES,
     ...tool.features,
+    outputDelivery: tool.output.delivery,
     resultPreviewMimeTypes:
-      tool.features?.resultPreviewMimeTypes ?? DEFAULT_FEATURES.resultPreviewMimeTypes,
+      tool.features?.resultPreviewMimeTypes ??
+      (tool.output.mimeType ? [tool.output.mimeType] : DEFAULT_FEATURES.resultPreviewMimeTypes),
   }
 }
 
 export function computeToolRunFingerprint(
   files: File[],
   params: Record<string, string>,
+  auxFiles: Record<string, File> = {},
 ): string {
   const filePart = files
     .map((file) => `${file.name}:${file.size}:${file.lastModified}`)
+    .join('|')
+  const auxPart = Object.keys(auxFiles)
+    .sort()
+    .map((key) => {
+      const file = auxFiles[key]
+      return `${key}:${file.name}:${file.size}:${file.lastModified}`
+    })
     .join('|')
   const paramPart = Object.keys(params)
     .sort()
     .map((key) => `${key}=${params[key] ?? ''}`)
     .join('&')
-  return `${filePart}::${paramPart}`
+  return `${filePart}::${auxPart}::${paramPart}`
 }
 
 export function getMinFiles(tool: ToolDefinition): number {
   return resolveToolFeatures(tool).minFiles
 }
 
-export function canRunTool(tool: ToolDefinition, fileCount: number): boolean {
-  return fileCount >= getMinFiles(tool)
+export function areRequiredParamsValid(
+  tool: ToolDefinition,
+  params: Record<string, string>,
+  auxFiles: Record<string, File> = {},
+): boolean {
+  for (const field of tool.paramFields ?? []) {
+    if (!isParamFieldVisible(field, params)) continue
+    if (!field.required) continue
+    if (field.type === 'file') {
+      if (!auxFiles[field.key]) return false
+      continue
+    }
+    if (!params[field.key]?.trim()) return false
+  }
+  return true
+}
+
+export function canRunTool(
+  tool: ToolDefinition,
+  fileCount: number,
+  params: Record<string, string> = {},
+  auxFiles: Record<string, File> = {},
+): boolean {
+  if (fileCount < getMinFiles(tool)) return false
+  return areRequiredParamsValid(tool, params, auxFiles)
 }
 
 export function getMinFilesErrorMessage(tool: ToolDefinition): string {
@@ -56,6 +89,24 @@ export function getMinFilesErrorMessage(tool: ToolDefinition): string {
   if (minFilesMessage) return minFilesMessage
   if (minFiles === 1) return 'Please add at least one file'
   return `Add at least ${minFiles} files to continue`
+}
+
+export function getRequiredParamsErrorMessage(
+  tool: ToolDefinition,
+  params: Record<string, string>,
+  auxFiles: Record<string, File> = {},
+): string {
+  for (const field of tool.paramFields ?? []) {
+    if (!isParamFieldVisible(field, params)) continue
+    if (!field.required) continue
+    if (field.type === 'file' && !auxFiles[field.key]) {
+      return `${field.label} is required`
+    }
+    if (field.type !== 'file' && !params[field.key]?.trim()) {
+      return `${field.label} is required`
+    }
+  }
+  return 'Please complete all required fields'
 }
 
 export function getMinFilesHintMessage(tool: ToolDefinition): string | null {
@@ -69,8 +120,21 @@ export function canPreviewInputFile(tool: ToolDefinition, file: File): boolean {
 
   if (tool.accepts === 'pdf') return file.type === MIME.pdf
   if (tool.accepts === 'image') return file.type.startsWith('image/')
+  if (tool.accepts === 'text') {
+    return (
+      file.type === MIME.plain ||
+      file.type === MIME.markdown ||
+      /\.(md|markdown|txt)$/i.test(file.name)
+    )
+  }
   if (tool.accepts === 'any') {
-    return file.type === MIME.pdf || file.type.startsWith('image/')
+    return (
+      file.type === MIME.pdf ||
+      file.type.startsWith('image/') ||
+      file.type === MIME.plain ||
+      file.type === MIME.markdown ||
+      /\.(md|markdown|txt)$/i.test(file.name)
+    )
   }
 
   return false

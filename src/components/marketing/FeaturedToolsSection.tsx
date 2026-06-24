@@ -11,6 +11,7 @@ import { ToolIconBox } from '@/components/ModeBadge'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/constants/routes'
 import { getFeaturedTools } from '@/features/toolFilters'
+import { getToolMode } from '@/features/types'
 import { cn } from '@/lib/utils'
 
 const BENTO_LAYOUT = [
@@ -64,7 +65,7 @@ export function FeaturedToolsSection() {
                       <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground line-clamp-2">
                         {tool.description}
                       </p>
-                      {tool.mode === 'backend' && (
+                      {getToolMode(tool) === 'backend' && (
                         <span className="mt-3 inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider text-primary">
                           <span className="h-1 w-1 rounded-full bg-primary" />
                           Server required

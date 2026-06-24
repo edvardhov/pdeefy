@@ -1,6 +1,6 @@
 import { PDFDocument, degrees } from 'pdf-lib'
 
-export type RotationAngle = 90 | 180 | 270
+export type RotationAngle = 0 | 90 | 180 | 270
 
 export async function rotatePdf(file: Uint8Array, angle: RotationAngle): Promise<Uint8Array> {
   const pdf = await PDFDocument.load(file, { ignoreEncryption: true })

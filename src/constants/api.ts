@@ -7,7 +7,10 @@ export const API = {
   paths: {
     health: '/api/health',
     pdfToWord: '/api/convert/pdf-to-word',
+    pdfToExcel: '/api/convert/pdf-to-excel',
+    pdfToPpt: '/api/convert/pdf-to-ppt',
     ocr: '/api/ocr',
     compress: '/api/edit/compress',
+    repair: '/api/edit/repair',
   },
 } as const

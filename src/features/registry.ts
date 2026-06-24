@@ -1,3 +1,13 @@
+/*
+ * ADD A NEW TOOL
+ *
+ * 1. Client transform: add pure fn in features/client/, add WorkerOp + worker case,
+ *    append one entry below with execution: { kind: 'worker', op }, output, paramFields.
+ * 2. Backend transform: add FastAPI route, append entry with execution: { kind: 'backend', endpoint }.
+ * 3. Editor: append entry with execution: { kind: 'editor', editor: { layout, capabilities } }.
+ *
+ * No changes needed to ToolWorkspace, runners, param UI, naming, or delivery logic.
+ */
 import {
   Combine,
   Scissors,
@@ -20,51 +30,46 @@ import {
   Minimize2,
   Wrench,
 } from 'lucide-react'
+import { API } from '@/constants/api'
+import { MIME } from '@/constants/mime'
 import type { ToolDefinition } from '@/features/types'
-import {
-  notImplementedRunner,
-  runDeepCompress,
-  runJpgToPdf,
-  runMerge,
-  runOcr,
-  runPasswordProtect,
-  runPdfToWord,
-  runRotate,
-  runSplit,
-} from '@/features/runners'
 
 export const TOOLS: ToolDefinition[] = [
-  // Organize
   {
     id: 'merge',
     name: 'Merge PDF',
     description: 'Combine multiple PDFs into one document.',
     category: 'Organize',
-    mode: 'client',
     icon: Combine,
     accepts: 'pdf',
     multiple: true,
+    execution: { kind: 'worker', op: 'merge' },
+    output: {
+      naming: { strategy: 'fixed', name: 'merged.pdf' },
+      delivery: 'preview',
+      successMessage: 'PDFs merged',
+    },
     features: {
       minFiles: 2,
       minFilesMessage: 'Add at least two PDFs to merge',
       inputPreview: true,
-      outputDelivery: 'preview',
     },
-    runner: runMerge,
   },
   {
     id: 'split',
     name: 'Split PDF',
     description: 'Split in half or extract pages by range.',
     category: 'Organize',
-    mode: 'client',
     icon: Scissors,
     accepts: 'pdf',
-    features: {
-      inputPreview: true,
-      outputDelivery: 'preview',
+    execution: { kind: 'worker', op: 'split', multiOutput: true },
+    output: {
+      naming: { strategy: 'derive', suffix: '_split' },
+      delivery: 'preview',
+      zipName: { suffix: '_splits.zip' },
+      successMessage: 'PDF split complete',
     },
-    runner: runSplit,
+    features: { inputPreview: true },
     paramFields: [
       {
         key: 'mode',
@@ -82,6 +87,7 @@ export const TOOLS: ToolDefinition[] = [
         type: 'text',
         placeholder: 'e.g. 1-3,5,7-9',
         showWhen: { mode: 'pages' },
+        required: true,
       },
     ],
   },
@@ -90,47 +96,84 @@ export const TOOLS: ToolDefinition[] = [
     name: 'Extract Pages',
     description: 'Extract selected pages into a new PDF.',
     category: 'Organize',
-    mode: 'client',
     icon: FileOutput,
     accepts: 'pdf',
+    execution: { kind: 'worker', op: 'extract' },
+    output: {
+      naming: { strategy: 'derive', prefix: 'extracted_', ext: 'pdf' },
+      delivery: 'preview',
+      successMessage: 'Pages extracted',
+    },
     features: { inputPreview: true },
-    runner: notImplementedRunner,
+    paramFields: [
+      {
+        key: 'ranges',
+        label: 'Page ranges',
+        type: 'text',
+        placeholder: 'e.g. 1-3,5,7-9',
+        required: true,
+      },
+    ],
   },
   {
     id: 'delete-pages',
     name: 'Delete Pages',
     description: 'Remove unwanted pages from a PDF.',
     category: 'Organize',
-    mode: 'client',
     icon: Trash2,
     accepts: 'pdf',
+    execution: { kind: 'worker', op: 'deletePages' },
+    output: {
+      naming: { strategy: 'derive', prefix: 'trimmed_', ext: 'pdf' },
+      delivery: 'preview',
+      successMessage: 'Pages deleted',
+    },
     features: { inputPreview: true },
-    runner: notImplementedRunner,
+    paramFields: [
+      {
+        key: 'pages',
+        label: 'Pages to delete',
+        type: 'text',
+        placeholder: 'e.g. 2,4,6-8',
+        required: true,
+      },
+    ],
   },
   {
     id: 'organize',
     name: 'Organize PDF',
     description: 'Reorder, rotate, and delete pages visually.',
     category: 'Organize',
-    mode: 'client',
     icon: LayoutGrid,
     accepts: 'pdf',
+    execution: {
+      kind: 'editor',
+      editor: {
+        layout: 'grid',
+        capabilities: ['reorder', 'rotatePage', 'deletePage'],
+      },
+    },
+    output: {
+      naming: { strategy: 'derive', prefix: 'organized_', ext: 'pdf' },
+      delivery: 'preview',
+      successMessage: 'PDF organized',
+    },
     features: { inputPreview: true },
-    runner: notImplementedRunner,
   },
   {
     id: 'rotate',
     name: 'Rotate PDF',
     description: 'Rotate all pages by 90°, 180°, or 270°.',
     category: 'Organize',
-    mode: 'client',
     icon: RotateCw,
     accepts: 'pdf',
-    features: {
-      inputPreview: true,
-      outputDelivery: 'preview',
+    execution: { kind: 'worker', op: 'rotate' },
+    output: {
+      naming: { strategy: 'derive', prefix: 'rotated_', ext: 'pdf' },
+      delivery: 'preview',
+      successMessage: 'PDF rotated',
     },
-    runner: runRotate,
+    features: { inputPreview: true },
     paramFields: [
       {
         key: 'angle',
@@ -145,70 +188,165 @@ export const TOOLS: ToolDefinition[] = [
       },
     ],
   },
-
-  // Edit & Sign
   {
     id: 'fill-sign',
     name: 'Fill & Sign',
     description: 'Add signatures and fill form fields.',
     category: 'Edit & Sign',
-    mode: 'client',
     icon: PenLine,
     accepts: 'pdf',
+    execution: {
+      kind: 'editor',
+      editor: {
+        layout: 'overlay',
+        capabilities: ['editText', 'signature', 'addText', 'addImage'],
+      },
+    },
+    output: {
+      naming: { strategy: 'derive', prefix: 'signed_', ext: 'pdf' },
+      delivery: 'preview',
+      successMessage: 'PDF signed',
+    },
     features: { inputPreview: true },
-    runner: notImplementedRunner,
   },
   {
     id: 'add-text',
-    name: 'Add Text',
-    description: 'Insert text anywhere on your PDF.',
+    name: 'Edit Text',
+    description: 'Edit existing text or add new text anywhere on your PDF.',
     category: 'Edit & Sign',
-    mode: 'client',
     icon: Type,
     accepts: 'pdf',
+    execution: {
+      kind: 'editor',
+      editor: { layout: 'overlay', capabilities: ['editText', 'addText'] },
+    },
+    output: {
+      naming: { strategy: 'derive', prefix: 'edited_', ext: 'pdf' },
+      delivery: 'preview',
+      successMessage: 'Text updated',
+    },
     features: { inputPreview: true },
-    runner: notImplementedRunner,
   },
   {
     id: 'add-images',
     name: 'Add Images',
     description: 'Place images on PDF pages.',
     category: 'Edit & Sign',
-    mode: 'client',
     icon: Image,
     accepts: 'pdf',
+    execution: {
+      kind: 'editor',
+      editor: { layout: 'overlay', capabilities: ['addImage'] },
+    },
+    output: {
+      naming: { strategy: 'derive', prefix: 'with_images_', ext: 'pdf' },
+      delivery: 'preview',
+      successMessage: 'Images added',
+    },
     features: { inputPreview: true },
-    runner: notImplementedRunner,
   },
   {
     id: 'watermark',
     name: 'Watermark',
-    description: 'Add a text or image watermark.',
+    description: 'Add repeating text or image watermarks to every page.',
     category: 'Edit & Sign',
-    mode: 'client',
     icon: Droplets,
     accepts: 'pdf',
+    execution: { kind: 'worker', op: 'watermark' },
+    output: {
+      naming: { strategy: 'derive', prefix: 'watermarked_', ext: 'pdf' },
+      delivery: 'preview',
+      successMessage: 'Watermark applied',
+    },
     features: { inputPreview: true },
-    runner: notImplementedRunner,
+    paramFields: [
+      {
+        key: 'mode',
+        label: 'Watermark type',
+        type: 'select',
+        defaultValue: 'text',
+        options: [
+          { value: 'text', label: 'Text' },
+          { value: 'image', label: 'Image' },
+        ],
+      },
+      {
+        key: 'text',
+        label: 'Watermark text',
+        type: 'text',
+        placeholder: 'CONFIDENTIAL',
+        required: true,
+        showWhen: { mode: 'text' },
+      },
+      {
+        key: 'fontSize',
+        label: 'Font size',
+        type: 'number',
+        defaultValue: '48',
+        min: 12,
+        max: 120,
+        step: 1,
+        showWhen: { mode: 'text' },
+      },
+      {
+        key: 'watermarkImage',
+        label: 'Watermark image',
+        type: 'file',
+        required: true,
+        showWhen: { mode: 'image' },
+      },
+      {
+        key: 'imageScale',
+        label: 'Image size (% of page width)',
+        type: 'number',
+        defaultValue: '35',
+        min: 10,
+        max: 80,
+        step: 5,
+        showWhen: { mode: 'image' },
+      },
+      {
+        key: 'layout',
+        label: 'Layout',
+        type: 'select',
+        defaultValue: 'tile',
+        options: [
+          { value: 'tile', label: 'Repeat across page' },
+          { value: 'single', label: 'Single (center)' },
+        ],
+      },
+      {
+        key: 'opacity',
+        label: 'Opacity',
+        type: 'number',
+        defaultValue: '0.3',
+        min: 0,
+        max: 1,
+        step: 0.1,
+      },
+    ],
   },
-
-  // Security
   {
     id: 'password-protect',
     name: 'Password Protect',
     description: 'Encrypt a PDF with a password.',
     category: 'Security',
-    mode: 'client',
     icon: Lock,
     accepts: 'pdf',
+    execution: { kind: 'worker', op: 'passwordProtect' },
+    output: {
+      naming: { strategy: 'derive', prefix: 'protected_', ext: 'pdf' },
+      delivery: 'download',
+      successMessage: 'PDF password applied',
+    },
     features: { inputPreview: true },
-    runner: runPasswordProtect,
     paramFields: [
       {
         key: 'userPassword',
         label: 'Password',
         type: 'password',
         placeholder: 'Enter password',
+        required: true,
       },
       {
         key: 'ownerPassword',
@@ -223,89 +361,128 @@ export const TOOLS: ToolDefinition[] = [
     name: 'Unlock PDF',
     description: 'Remove password with the known password.',
     category: 'Security',
-    mode: 'client',
     icon: LockOpen,
     accepts: 'pdf',
+    execution: { kind: 'worker', op: 'unlock' },
+    output: {
+      naming: { strategy: 'derive', prefix: 'unlocked_', ext: 'pdf' },
+      delivery: 'preview',
+      successMessage: 'PDF unlocked',
+    },
     features: { inputPreview: true },
-    runner: notImplementedRunner,
+    paramFields: [
+      {
+        key: 'password',
+        label: 'Password',
+        type: 'password',
+        placeholder: 'Enter PDF password',
+        required: true,
+      },
+    ],
   },
   {
     id: 'flatten',
     name: 'Flatten PDF',
     description: 'Flatten form fields and annotations.',
     category: 'Security',
-    mode: 'client',
     icon: Layers,
     accepts: 'pdf',
+    execution: { kind: 'worker', op: 'flatten' },
+    output: {
+      naming: { strategy: 'derive', prefix: 'flattened_', ext: 'pdf' },
+      delivery: 'preview',
+      successMessage: 'PDF flattened',
+    },
     features: { inputPreview: true },
-    runner: notImplementedRunner,
   },
-
-  // Convert To PDF
   {
     id: 'jpg-to-pdf',
     name: 'JPG to PDF',
     description: 'Convert JPG/PNG images into a PDF.',
     category: 'Convert To PDF',
-    mode: 'client',
     icon: FileImage,
     accepts: 'image',
     multiple: true,
-    runner: runJpgToPdf,
+    execution: { kind: 'worker', op: 'jpgToPdf' },
+    output: {
+      naming: { strategy: 'fixed', name: 'images.pdf' },
+      delivery: 'preview',
+      successMessage: 'Images converted to PDF',
+    },
   },
   {
     id: 'markdown-to-pdf',
     name: 'Markdown to PDF',
     description: 'Render Markdown or plain text as PDF.',
     category: 'Convert To PDF',
-    mode: 'client',
     icon: FileText,
-    accepts: 'any',
-    runner: notImplementedRunner,
+    accepts: 'text',
+    execution: { kind: 'worker', op: 'markdownToPdf' },
+    output: {
+      naming: { strategy: 'derive', ext: 'pdf' },
+      delivery: 'preview',
+      successMessage: 'Document converted to PDF',
+    },
   },
-
-  // Convert From PDF (backend)
   {
     id: 'pdf-to-word',
     name: 'PDF to Word',
     description: 'Convert PDF to editable DOCX.',
     category: 'Convert From PDF',
-    mode: 'backend',
     icon: FileText,
     accepts: 'pdf',
-    runner: runPdfToWord,
+    execution: { kind: 'backend', endpoint: API.paths.pdfToWord },
+    output: {
+      naming: { strategy: 'derive', ext: 'docx' },
+      mimeType: MIME.docx,
+      delivery: 'download',
+      successMessage: 'PDF converted to Word',
+    },
   },
   {
     id: 'pdf-to-excel',
     name: 'PDF to Excel',
     description: 'Convert PDF tables to XLSX.',
     category: 'Convert From PDF',
-    mode: 'backend',
     icon: FileSpreadsheet,
     accepts: 'pdf',
-    runner: notImplementedRunner,
+    execution: { kind: 'backend', endpoint: API.paths.pdfToExcel },
+    output: {
+      naming: { strategy: 'derive', ext: 'xlsx' },
+      mimeType: MIME.xlsx,
+      delivery: 'download',
+      successMessage: 'PDF converted to Excel',
+    },
   },
   {
     id: 'pdf-to-ppt',
     name: 'PDF to PowerPoint',
     description: 'Convert PDF slides to PPTX.',
     category: 'Convert From PDF',
-    mode: 'backend',
     icon: Presentation,
     accepts: 'pdf',
-    runner: notImplementedRunner,
+    execution: { kind: 'backend', endpoint: API.paths.pdfToPpt },
+    output: {
+      naming: { strategy: 'derive', ext: 'pptx' },
+      mimeType: MIME.pptx,
+      delivery: 'download',
+      successMessage: 'PDF converted to PowerPoint',
+    },
   },
-
-  // Optimize & OCR (backend)
   {
     id: 'ocr',
     name: 'OCR',
     description: 'Extract searchable text from scanned PDFs.',
     category: 'Optimize & OCR',
-    mode: 'backend',
     icon: ScanText,
     accepts: 'pdf',
-    runner: runOcr,
+    execution: { kind: 'backend', endpoint: API.paths.ocr },
+    output: {
+      naming: { strategy: 'derive', prefix: 'ocr_', ext: 'pdf' },
+      mimeType: MIME.pdf,
+      delivery: 'preview',
+      successMessage: 'OCR completed',
+    },
     paramFields: [
       {
         key: 'language',
@@ -326,20 +503,30 @@ export const TOOLS: ToolDefinition[] = [
     name: 'Deep Compress',
     description: 'Aggressive file-size reduction via server tools.',
     category: 'Optimize & OCR',
-    mode: 'backend',
     icon: Minimize2,
     accepts: 'pdf',
-    runner: runDeepCompress,
+    execution: { kind: 'backend', endpoint: API.paths.compress },
+    output: {
+      naming: { strategy: 'derive', prefix: 'compressed_', ext: 'pdf' },
+      mimeType: MIME.pdf,
+      delivery: 'preview',
+      successMessage: 'PDF compressed',
+    },
   },
   {
     id: 'repair',
     name: 'Repair PDF',
     description: 'Fix corrupted or broken PDF files.',
     category: 'Optimize & OCR',
-    mode: 'backend',
     icon: Wrench,
     accepts: 'pdf',
-    runner: notImplementedRunner,
+    execution: { kind: 'backend', endpoint: API.paths.repair },
+    output: {
+      naming: { strategy: 'derive', prefix: 'repaired_', ext: 'pdf' },
+      mimeType: MIME.pdf,
+      delivery: 'preview',
+      successMessage: 'PDF repaired',
+    },
   },
 ]
 
@@ -348,4 +535,3 @@ export const TOOL_MAP = new Map(TOOLS.map((tool) => [tool.id, tool]))
 export function getToolById(id: string): ToolDefinition | undefined {
   return TOOL_MAP.get(id)
 }
-

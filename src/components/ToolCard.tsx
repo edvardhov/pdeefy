@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { ModeBadge, ToolIconBox } from '@/components/ModeBadge'
 import { cn } from '@/lib/utils'
 import { isToolImplemented } from '@/features/toolFilters'
-import type { ToolDefinition } from '@/features/types'
+import { getToolMode, type ToolDefinition } from '@/features/types'
 import { useAppStore } from '@/store/appStore'
 import { useOpenTool } from '@/hooks/useOpenTool'
 
@@ -17,6 +17,7 @@ export function ToolCard({ tool, onBackendGate, showCategory = false }: ToolCard
   const openTool = useOpenTool(onBackendGate)
   const isBackendConnected = useAppStore((s) => s.isBackendConnected)
   const ready = isToolImplemented(tool)
+  const mode = getToolMode(tool)
 
   const handleClick = () => openTool(tool)
 
@@ -31,14 +32,14 @@ export function ToolCard({ tool, onBackendGate, showCategory = false }: ToolCard
       className={cn(
         'group cursor-pointer gap-0 py-0 transition-all hover:border-lavender-grey-600 hover:shadow-md dark:hover:border-lavender-grey-400',
         !ready && 'opacity-75',
-        tool.mode === 'backend' && !isBackendConnected && 'opacity-90',
+        mode === 'backend' && !isBackendConnected && 'opacity-90',
       )}
     >
       <CardHeader className="space-y-3 px-5 py-5">
         <div className="flex items-start justify-between gap-2">
           <ToolIconBox icon={tool.icon} />
           <div className="flex flex-wrap justify-end gap-1.5">
-            <ModeBadge mode={tool.mode} />
+            <ModeBadge mode={mode} />
             {!ready && (
               <Badge variant="outline" className="text-xs text-muted-foreground">
                 Coming soon

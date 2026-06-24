@@ -40,3 +40,5 @@ ERR_EMPTY_FILE = "Empty file"
 
 MIME_PDF = "application/pdf"
 MIME_DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+MIME_XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+MIME_PPTX = "application/vnd.openxmlformats-officedocument.presentationml.presentation"

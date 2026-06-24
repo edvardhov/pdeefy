@@ -4,6 +4,12 @@ export type WorkerOp =
   | 'rotate'
   | 'jpgToPdf'
   | 'passwordProtect'
+  | 'unlock'
+  | 'watermark'
+  | 'flatten'
+  | 'extract'
+  | 'deletePages'
+  | 'markdownToPdf'
 
 export interface WorkerRequest {
   id: string

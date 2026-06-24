@@ -1,4 +1,5 @@
-import { MIME } from '@/constants/mime'
+import { EXT_TO_MIME, MIME } from '@/constants/mime'
+import type { OutputNamingDerive, OutputNamingFixed, OutputZipNaming } from '@/features/types'
 
 export function bytesToPdfFile(data: Uint8Array, filename: string): File {
   const copy = new Uint8Array(data)
@@ -59,4 +60,34 @@ export async function downloadMultiple(items: DownloadItem[], zipName: string) {
 export function baseName(filename: string): string {
   const dot = filename.lastIndexOf('.')
   return dot === -1 ? filename : filename.slice(0, dot)
+}
+
+export function resolveMimeForExt(filename: string, fallback = MIME.pdf): string {
+  const dot = filename.lastIndexOf('.')
+  if (dot === -1) return fallback
+  const ext = filename.slice(dot + 1).toLowerCase()
+  return EXT_TO_MIME[ext] ?? fallback
+}
+
+export function buildOutputName(
+  sourceFilename: string | undefined,
+  naming: OutputNamingFixed | OutputNamingDerive,
+): string {
+  if (naming.strategy === 'fixed') return naming.name
+
+  const base = sourceFilename ? baseName(sourceFilename) : 'output'
+  const ext =
+    naming.ext ??
+    (sourceFilename?.includes('.') ? sourceFilename.slice(sourceFilename.lastIndexOf('.') + 1) : 'pdf')
+
+  return `${naming.prefix ?? ''}${base}${naming.suffix ?? ''}.${ext}`
+}
+
+export function buildZipName(
+  sourceFilename: string | undefined,
+  zipNaming?: OutputZipNaming,
+): string | undefined {
+  if (!zipNaming) return undefined
+  const base = sourceFilename ? baseName(sourceFilename) : 'output'
+  return `${zipNaming.prefix ?? ''}${base}${zipNaming.suffix ?? '_output.zip'}`
 }

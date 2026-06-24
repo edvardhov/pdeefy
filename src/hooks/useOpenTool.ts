@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/constants/routes'
-import type { ToolDefinition } from '@/features/types'
+import { getToolMode, type ToolDefinition } from '@/features/types'
 import { useAppStore } from '@/store/appStore'
 
 export function useOpenTool(onBackendGate: (tool: ToolDefinition) => void) {
@@ -8,7 +8,7 @@ export function useOpenTool(onBackendGate: (tool: ToolDefinition) => void) {
   const isBackendConnected = useAppStore((s) => s.isBackendConnected)
 
   return (tool: ToolDefinition) => {
-    if (tool.mode === 'backend' && !isBackendConnected) {
+    if (getToolMode(tool) === 'backend' && !isBackendConnected) {
       onBackendGate(tool)
       return
     }

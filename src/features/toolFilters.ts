@@ -1,13 +1,12 @@
 import { TOOLS } from '@/features/registry'
-import type { ToolCategory, ToolDefinition, ToolMode } from '@/features/types'
+import { getToolMode, type ToolCategory, type ToolDefinition, type ToolMode } from '@/features/types'
 import { CATEGORY_ORDER } from '@/constants/categories'
 import {
   FEATURED_TOOL_IDS,
-  IMPLEMENTED_TOOL_IDS,
   POPULAR_TOOL_IDS,
 } from '@/constants/tools'
 
-export { POPULAR_TOOL_IDS, FEATURED_TOOL_IDS, IMPLEMENTED_TOOL_IDS }
+export { POPULAR_TOOL_IDS, FEATURED_TOOL_IDS }
 
 export type ModeFilter = 'all' | ToolMode
 export type CategoryFilter = 'all' | ToolCategory
@@ -19,7 +18,7 @@ export interface ToolFilters {
 }
 
 export function isToolImplemented(tool: ToolDefinition): boolean {
-  return IMPLEMENTED_TOOL_IDS.has(tool.id)
+  return tool.execution.kind !== 'editor' || tool.execution.editor.capabilities.length > 0
 }
 
 export function categorySlug(category: ToolCategory): string {
@@ -36,7 +35,7 @@ export function filterTools(
   const normalizedQuery = query.trim().toLowerCase()
 
   return tools.filter((tool) => {
-    if (mode !== 'all' && tool.mode !== mode) return false
+    if (mode !== 'all' && getToolMode(tool) !== mode) return false
     if (category !== 'all' && tool.category !== category) return false
     if (!normalizedQuery) return true
 

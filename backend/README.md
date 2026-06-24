@@ -51,5 +51,8 @@ Health check: `GET http://localhost:8000/api/health`
 | ------ | -------------------------- | -------------------- |
 | GET    | `/api/health`              | Health check         |
 | POST   | `/api/convert/pdf-to-word` | PDF → DOCX           |
+| POST   | `/api/convert/pdf-to-excel`| PDF → XLSX           |
+| POST   | `/api/convert/pdf-to-ppt`  | PDF → PPTX           |
 | POST   | `/api/ocr`                 | OCR scanned PDF      |
 | POST   | `/api/edit/compress`       | Deep PDF compression |
+| POST   | `/api/edit/repair`         | Repair corrupted PDF |
